@@ -5,22 +5,21 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
+using HtmlAgilityPack;
 namespace crmPadok
 {
     class Crm
     {
+        /// <summary>
+        /// Container for first request
+        /// </summary>
         CookieContainer _container = new CookieContainer();
+        /// <summary>
+        /// Container for second request
+        /// </summary>
         CookieContainer container = new CookieContainer();
 
-        string username, password;
-
-        public Crm(string username,string password)
-        {
-            this.username = username;
-            this.password = password;
-        }
-        public bool login()
+        public bool login(string username, string password)
         {
             try
             {
@@ -48,20 +47,27 @@ namespace crmPadok
                 request.ContentLength = data.Length;
                 request.Credentials = new System.Net.NetworkCredential(musteriNo, sifre);
                 _container = request.CookieContainer;
-                Stream str = request.GetRequestStream();
-                str.Write(data, 0, data.Length);
-                str.Close();
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                //post data to server
+                using (Stream str = request.GetRequestStream())
+                    str.Write(data, 0, data.Length);
 
-                CookieCollection cookie = response.Cookies;
-                Stream recStream = response.GetResponseStream();
-
-                StreamReader read = new StreamReader(recStream, encode);
-                string strResponse = read.ReadToEnd();
-                string cookieHeader = response.Headers["Set-Cookie"];
-                read.Close();
-                response.Close();
-                return true;
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+                    using (Stream recStream = response.GetResponseStream())
+                    {
+                        using (StreamReader read = new StreamReader(recStream, Encoding.UTF8))
+                        {
+                            string strResponse = read.ReadToEnd();
+                            read.Close();
+                            response.Close();
+                            if (!strResponse.Contains("UYARI:Bilgileri eksik girdiniz")||!strResponse.Contains("UYARI:(P10012)")||
+                                !strResponse.Contains("UYARI:(P00120)"))
+                                return true;
+                            else
+                                return false;
+                        }
+                    }
+                }
             }
             catch (Exception)
             {
@@ -86,39 +92,52 @@ namespace crmPadok
                 request.ContentType = "application/x-www-form-urlencoded";
                 request.Method = "POST";
                 request.ContentLength = data.Length;
+                request.AllowAutoRedirect = true;
                 container = request.CookieContainer;
                 Stream str = request.GetRequestStream();
                 str.Write(data, 0, data.Length);
                 str.Close();
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                response.Close();
-
-                return true;
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+                    string responseText = new StreamReader(response.GetResponseStream(),Encoding.UTF8).ReadToEnd();
+                    if (responseText.Contains("HESAP İŞLEMLERİ"))
+                        return true;
+                    else
+                        return false;
+                }
             }
             catch
             {
                 return false;
             }
         }
-        public void getHesapNo()
+        public Dictionary<string,string> getHesapNo()
         {
-            string url = "https://ipc2.ptt.gov.tr/pttwebapproot/ipcservlet?cmd=kurumtahsilatgiristelefon";
-            Encoding encode = Encoding.ASCII;
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            request.CookieContainer = container;
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            HtmlDocument doc=GetHtmlDocument((new StreamReader(response.GetResponseStream())).ReadToEnd());
-            
-        }
-        public System.Windows.Forms.HtmlDocument GetHtmlDocument(string html)
-        {
-            WebBrowser browser = new WebBrowser();
-            browser.ScriptErrorsSuppressed = true;
-            browser.DocumentText = html;
-            browser.Document.OpenNew(true);
-            browser.Document.Write(html);
-            browser.Refresh();
-            return browser.Document;
+            Dictionary<string, string> list = new Dictionary<string, string>();
+            try {
+                string url = "https://ipc2.ptt.gov.tr/pttwebapproot/ipcservlet?cmd=kurumtahsilatgiristelefon";
+               // string url = "https://ipc2.ptt.gov.tr/pttwebapproot/ipcservlet";
+                Encoding encode = Encoding.ASCII;
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                request.UserAgent = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.121 Safari/535.2";
+                request.CookieContainer = container;
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+                    HtmlDocument doc = new HtmlDocument();
+                    doc.LoadHtml((new StreamReader(response.GetResponseStream())).ReadToEnd());
+                    var nodes = doc.DocumentNode.SelectNodes("//table//center//option");
+                    list.Add("HesapNoVal",nodes[0].NextSibling.InnerHtml);
+                    list.Add("HesapnoPlText", (nodes[0].OuterHtml.ToString()).Substring(15, 15));
+                }
+                HttpWebRequest request2 = (HttpWebRequest)WebRequest.Create("https://ipc2.ptt.gov.tr/pttwebapproot/ipcservlet");
+                request2.CookieContainer = container;
+
+                return list;
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }

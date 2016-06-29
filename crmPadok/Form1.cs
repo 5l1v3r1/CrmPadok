@@ -1,19 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Net;
 using System.IO;
-using System.Web;
 namespace crmPadok
 {
     public partial class Form1 : Form
     {
+        Crm objCrm = new Crm();
         public Form1()
         {
             InitializeComponent();
@@ -21,49 +16,70 @@ namespace crmPadok
         CookieContainer cookieContainer = new CookieContainer();
         private void btnLogin_Click(object sender, EventArgs e)
         {
-            string url = "https://ipc2.ptt.gov.tr/pttwebapproot/ipcservlet";
-            Encoding encode = Encoding.ASCII;
-          
-            string tcNo = WebUtility.UrlEncode("");
-            string cmd = WebUtility.UrlEncode("kontrolparola");
-            string h_PageValidation = WebUtility.UrlEncode("ON");
-            string secimtipi = WebUtility.UrlEncode("on");
-            string sifreK = WebUtility.UrlEncode("");
-            string musteriNo = txtMusteriNo.Text;
-            musteriNo = WebUtility.UrlEncode(musteriNo);
-            string sifre = txtSifre.Text;
-            sifre = WebUtility.UrlEncode(sifre);
-
-            string fields = "TcNo=" + tcNo + "&" + "cmd=" + cmd + "&" + "h_PageValidation=" + h_PageValidation + "&" +
-                "secimtipi=" + secimtipi + "&" + "sifreK=" + sifreK + "&" + "musteriNo=" + musteriNo + "&" + "sifreM=" + sifre;
-            byte[] data = encode.GetBytes(fields);
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-
-            request.CookieContainer = new CookieContainer();
-            request.ContentType = "application/x-www-form-urlencoded";
-            request.Method = "POST";
-            request.ContentLength = data.Length;
-            request.Credentials = new System.Net.NetworkCredential(musteriNo, sifre);
-            cookieContainer = request.CookieContainer;
-            Stream str = request.GetRequestStream();
-            str.Write(data, 0, data.Length);
-            str.Close();
-            HttpWebResponse response =(HttpWebResponse)request.GetResponse();
-            Stream recStream = response.GetResponseStream();
-            StreamReader read = new StreamReader(recStream, encode);
-            string strResponse = read.ReadToEnd();
-            string cookieHeader = response.Headers["Set-Cookie"];
-            MessageBox.Show(strResponse);
-            read.Close();
-            response.Close();
-
-
+            if (txtMusteriNo.Text.Length != 11 || txtSifre.Text.Length != 8)
+            {
+                MessageBox.Show("Müsteri no 11,şifre 8 karakter uzunluğunda olmalıdır.", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            if(objCrm.login(txtMusteriNo.Text, txtSifre.Text))
+            {
+                lblSifre.Visible = false;
+                lblMusteri.Visible = false;
+                txtMusteriNo.Visible = false;
+                txtSifre.Visible = false;
+                btnLogin.Visible = false;
+                btnSms.Visible = true;
+                txtSms.Visible = true;
+                lblSms.Visible = true;
+                timer();
+            }
+           else
+            {
+                MessageBox.Show("Giriş yapılırken bir hata oluştu","Hata",MessageBoxButtons.OK,MessageBoxIcon.Error);
+            }
         }
-
-        private void button1_Click(object sender, EventArgs e)
+        private void btnSms_Click(object sender, EventArgs e)
         {
-            Crm objCrm = new Crm("1234", "1234");
-            objCrm.getHesapNo();
+            if (txtSms.Text == "")
+            {
+                MessageBox.Show("Sms şifrenizi giriniz", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            if(objCrm.SmsApproval(txtSms.Text))
+            {
+                MessageBox.Show("Giriş Başarılı");
+            }
+            else
+            {
+                MessageBox.Show("Giriş Başarısız");
+            }
+        }
+        private void timer()
+        {
+            tmr.Start();
+            DateTime dt = DateTime.Now.AddHours(0).AddMinutes(3).AddSeconds(0);
+            lblTime.Visible = true;
+            tmr.Interval = 1000;
+            tmr.Tick += (sender, e) =>
+            {
+                TimeSpan diff = dt.Subtract(DateTime.Now);
+                lblTime.Text = string.Format("{0:00}:{1:00}:{2:00}", diff.Hours, diff.Minutes, diff.Seconds);
+                if (dt < DateTime.Now)
+                {
+                    ((Timer)sender).Stop();
+                    MessageBox.Show("Sms şifresi giriş süreniz doldu lütfen tekrar giriş yapınız","Uyarı",MessageBoxButtons.OK,MessageBoxIcon.Information);
+                    txtSms.Visible = false;
+                    btnSms.Visible = false;
+                    lblSms.Visible = false;
+                    btnLogin.Visible = true;
+                    txtSifre.Visible = true;
+                    txtMusteriNo.Visible = true;
+                    lblMusteri.Visible = true;
+                    lblSifre.Visible = true;
+                    lblTime.Visible = false;
+                }
+                   
+            };
         }
     }
 }

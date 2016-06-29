@@ -4,6 +4,8 @@ using System.Text;
 using System.Windows.Forms;
 using System.Net;
 using System.IO;
+using System.Threading.Tasks;
+using System.Threading;
 namespace crmPadok
 {
     public partial class Form1 : Form
@@ -14,15 +16,19 @@ namespace crmPadok
             InitializeComponent();
         }
         CookieContainer cookieContainer = new CookieContainer();
-        private void btnLogin_Click(object sender, EventArgs e)
+        private async void btnLogin_Click(object sender, EventArgs e)
         {
             if (txtMusteriNo.Text.Length != 11 || txtSifre.Text.Length != 8)
             {
                 MessageBox.Show("Müsteri no 11,şifre 8 karakter uzunluğunda olmalıdır.", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            if(objCrm.login(txtMusteriNo.Text, txtSifre.Text))
+            Task<bool> taskSonuc = Task.Factory.StartNew(() => objCrm.login(txtMusteriNo.Text, txtSifre.Text));
+            lblBekle.Text = "Giriş yapılıyor...";
+            bool sonuc = await taskSonuc;
+            if (sonuc)
             {
+                lblBekle.Visible = false;
                 lblSifre.Visible = false;
                 lblMusteri.Visible = false;
                 txtMusteriNo.Visible = false;
@@ -33,9 +39,10 @@ namespace crmPadok
                 lblSms.Visible = true;
                 timer();
             }
-           else
+            else
             {
-                MessageBox.Show("Giriş yapılırken bir hata oluştu","Hata",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                lblBekle.Text = "Giriş başarısız";
+                MessageBox.Show("Giriş yapılırken bir hata oluştu", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
         private void btnSms_Click(object sender, EventArgs e)
@@ -47,7 +54,17 @@ namespace crmPadok
             }
             if(objCrm.SmsApproval(txtSms.Text))
             {
-                MessageBox.Show("Giriş Başarılı");
+                try
+                {
+                    Dictionary<string, string> list = objCrm.getHesapNo();
+                    Bilgiler bForm = new Bilgiler(list["hesapNo"], list["hesapSahibi"], list["bakiye"],
+                        list["hesapTuru"], list["meslekKodu"], list["aciklama"], list["hesapDurumKodu"]);
+                    bForm.ShowDialog();
+                }
+                catch
+                {
+                    MessageBox.Show("Bilgiler gönderilirken hata oluştu");
+                }
             }
             else
             {
@@ -66,7 +83,7 @@ namespace crmPadok
                 lblTime.Text = string.Format("{0:00}:{1:00}:{2:00}", diff.Hours, diff.Minutes, diff.Seconds);
                 if (dt < DateTime.Now)
                 {
-                    ((Timer)sender).Stop();
+                    ((System.Windows.Forms.Timer)sender).Stop();
                     MessageBox.Show("Sms şifresi giriş süreniz doldu lütfen tekrar giriş yapınız","Uyarı",MessageBoxButtons.OK,MessageBoxIcon.Information);
                     txtSms.Visible = false;
                     btnSms.Visible = false;
@@ -80,6 +97,11 @@ namespace crmPadok
                 }
                    
             };
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            
         }
     }
 }

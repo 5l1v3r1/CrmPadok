@@ -56,14 +56,25 @@ namespace crmPadok
             {
                 try
                 {
-                    Dictionary<string, string> list = objCrm.getHesapNo();
-                    Bilgiler bForm = new Bilgiler(list["hesapNo"], list["hesapSahibi"], list["bakiye"],
-                        list["hesapTuru"], list["meslekKodu"], list["aciklama"], list["hesapDurumKodu"]);
-                    bForm.ShowDialog();
+                    txtSms.Text = "";
+                    tmr.Stop();
+                    txtSms.Visible = false;
+                    btnSms.Visible = false;
+                    lblSms.Visible = false;
+                    btnLogin.Visible = true;
+                    txtSifre.Visible = true;
+                    txtMusteriNo.Visible = true;
+                    lblMusteri.Visible = true;
+                    lblSifre.Visible = true;
+                    lblTime.Visible = false;
+                    this.Hide();
+                    Bilgiler bForm = new Bilgiler(objCrm);
+                    bForm.Show();
+               
                 }
-                catch
+                catch(Exception ex)
                 {
-                    MessageBox.Show("Bilgiler gönderilirken hata oluştu");
+                    MessageBox.Show("Bilgiler gönderilirken hata oluştu " +ex.Message);
                 }
             }
             else
@@ -99,9 +110,5 @@ namespace crmPadok
             };
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            
-        }
     }
 }

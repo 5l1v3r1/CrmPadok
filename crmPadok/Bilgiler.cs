@@ -8,7 +8,12 @@ namespace crmPadok
         Crm objCrm;
         private void btnTelefon_Click(object sender, EventArgs e)
         {
-           string[] sonuc= objCrm.telefonFatura(txtTelefon.Text);
+            if (txtTelefon.Text.Length != 10)
+            {
+                MessageBox.Show("Hatalı giriş yaptınız", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+                string[] sonuc= objCrm.telefonFatura(txtTelefon.Text);
             if(sonuc.Length>=10)
             MessageBox.Show("İsim: "+sonuc[10]+" Borç Dönemi: "+sonuc[2]+" Borç: "+sonuc[1]);
             else
@@ -16,6 +21,11 @@ namespace crmPadok
         }
         private void btnSorgula_Click(object sender, EventArgs e)
         {
+            if (txtAdsl.Text.Length != 10)
+            {
+                MessageBox.Show("Hatalı giriş yaptınız", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
             string[] sonuc = objCrm.adslFatura(txtAdsl.Text); 
             if (sonuc.Length >= 10)
                 MessageBox.Show("İsim: " + sonuc[10] + " Borç Dönemi: " + sonuc[2] + " Borç: " + sonuc[1]);

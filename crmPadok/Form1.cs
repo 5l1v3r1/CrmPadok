@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows.Forms;
-using System.Net;
-using System.IO;
 using System.Threading.Tasks;
-using System.Threading;
 namespace crmPadok
 {
     public partial class Form1 : Form
@@ -15,19 +10,22 @@ namespace crmPadok
         {
             InitializeComponent();
         }
-        CookieContainer cookieContainer = new CookieContainer();
         private async void btnLogin_Click(object sender, EventArgs e)
         {
+            
             if (txtMusteriNo.Text.Length != 11 || txtSifre.Text.Length != 8)
             {
                 MessageBox.Show("Müsteri no 11,şifre 8 karakter uzunluğunda olmalıdır.", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
+         
             Task<bool> taskSonuc = Task.Factory.StartNew(() => objCrm.login(txtMusteriNo.Text, txtSifre.Text));
             lblBekle.Text = "Giriş yapılıyor...";
+            btnLogin.Enabled = false;
             bool sonuc = await taskSonuc;
             if (sonuc)
             {
+                #region gizle göster
                 lblBekle.Visible = false;
                 lblSifre.Visible = false;
                 lblMusteri.Visible = false;
@@ -36,28 +34,35 @@ namespace crmPadok
                 btnLogin.Visible = false;
                 btnSms.Visible = true;
                 txtSms.Visible = true;
-                lblSms.Visible = true;
+                lblSms.Visible = true; 
+                #endregion
                 timer();
             }
             else
             {
+                btnLogin.Enabled = true;
                 lblBekle.Text = "Giriş başarısız";
                 MessageBox.Show("Giriş yapılırken bir hata oluştu", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        private void btnSms_Click(object sender, EventArgs e)
+        private async void btnSms_Click(object sender, EventArgs e)
         {
-            if (txtSms.Text == "")
+            if (txtSms.Text == "" || txtSms.Text.Length!=6)
             {
-                MessageBox.Show("Sms şifrenizi giriniz", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Hatalı giriş yaptınız", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            if(objCrm.SmsApproval(txtSms.Text))
+            Task<bool> taskSonuc = Task.Factory.StartNew(() => objCrm.SmsApproval(txtSms.Text));
+            btnSms.Enabled = false;
+            lblBekle.Text = "Giriş yapılıyor...";
+            bool sonuc = await taskSonuc;
+            if (sonuc)
             {
                 try
                 {
-                    txtSms.Text = "";
                     tmr.Stop();
+                    #region gizle göster
+                    txtSms.Text = "";
                     txtSms.Visible = false;
                     btnSms.Visible = false;
                     lblSms.Visible = false;
@@ -67,18 +72,19 @@ namespace crmPadok
                     lblMusteri.Visible = true;
                     lblSifre.Visible = true;
                     lblTime.Visible = false;
-                    this.Hide();
+                    this.Hide(); 
+                    #endregion
                     Bilgiler bForm = new Bilgiler(objCrm);
                     bForm.Show();
-               
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
-                    MessageBox.Show("Bilgiler gönderilirken hata oluştu " +ex.Message);
+                    MessageBox.Show("Bilgiler gönderilirken hata oluştu " + ex.Message);
                 }
             }
             else
             {
+                btnSms.Enabled = true;
                 MessageBox.Show("Giriş Başarısız");
             }
         }
@@ -96,6 +102,7 @@ namespace crmPadok
                 {
                     ((System.Windows.Forms.Timer)sender).Stop();
                     MessageBox.Show("Sms şifresi giriş süreniz doldu lütfen tekrar giriş yapınız","Uyarı",MessageBoxButtons.OK,MessageBoxIcon.Information);
+                    #region gizle göster
                     txtSms.Visible = false;
                     btnSms.Visible = false;
                     lblSms.Visible = false;
@@ -105,6 +112,9 @@ namespace crmPadok
                     lblMusteri.Visible = true;
                     lblSifre.Visible = true;
                     lblTime.Visible = false;
+                    btnLogin.Enabled = true;
+                    btnSms.Enabled = true;
+                    #endregion
                 }
                    
             };

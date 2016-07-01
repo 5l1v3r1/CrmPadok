@@ -44,24 +44,29 @@
             // 
             // btnLogin
             // 
-            this.btnLogin.Location = new System.Drawing.Point(181, 101);
+            this.btnLogin.BackColor = System.Drawing.Color.MediumAquamarine;
+            this.btnLogin.FlatAppearance.BorderSize = 0;
+            this.btnLogin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnLogin.Font = new System.Drawing.Font("Georgia", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.btnLogin.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.btnLogin.Location = new System.Drawing.Point(209, 105);
             this.btnLogin.Name = "btnLogin";
-            this.btnLogin.Size = new System.Drawing.Size(75, 23);
+            this.btnLogin.Size = new System.Drawing.Size(75, 35);
             this.btnLogin.TabIndex = 0;
             this.btnLogin.Text = "Giriş";
-            this.btnLogin.UseVisualStyleBackColor = true;
+            this.btnLogin.UseVisualStyleBackColor = false;
             this.btnLogin.Click += new System.EventHandler(this.btnLogin_Click);
             // 
             // txtMusteriNo
             // 
-            this.txtMusteriNo.Location = new System.Drawing.Point(102, 38);
+            this.txtMusteriNo.Location = new System.Drawing.Point(130, 32);
             this.txtMusteriNo.Name = "txtMusteriNo";
             this.txtMusteriNo.Size = new System.Drawing.Size(154, 20);
             this.txtMusteriNo.TabIndex = 1;
             // 
             // txtSifre
             // 
-            this.txtSifre.Location = new System.Drawing.Point(102, 65);
+            this.txtSifre.Location = new System.Drawing.Point(130, 59);
             this.txtSifre.Name = "txtSifre";
             this.txtSifre.Size = new System.Drawing.Size(154, 20);
             this.txtSifre.TabIndex = 2;
@@ -70,24 +75,26 @@
             // lblMusteri
             // 
             this.lblMusteri.AutoSize = true;
-            this.lblMusteri.Location = new System.Drawing.Point(32, 41);
+            this.lblMusteri.Font = new System.Drawing.Font("Georgia", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.lblMusteri.Location = new System.Drawing.Point(46, 34);
             this.lblMusteri.Name = "lblMusteri";
-            this.lblMusteri.Size = new System.Drawing.Size(64, 13);
+            this.lblMusteri.Size = new System.Drawing.Size(78, 15);
             this.lblMusteri.TabIndex = 4;
             this.lblMusteri.Text = "Müşteri No :";
             // 
             // lblSifre
             // 
             this.lblSifre.AutoSize = true;
-            this.lblSifre.Location = new System.Drawing.Point(62, 68);
+            this.lblSifre.Font = new System.Drawing.Font("Georgia", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.lblSifre.Location = new System.Drawing.Point(80, 60);
             this.lblSifre.Name = "lblSifre";
-            this.lblSifre.Size = new System.Drawing.Size(34, 13);
+            this.lblSifre.Size = new System.Drawing.Size(41, 15);
             this.lblSifre.TabIndex = 5;
             this.lblSifre.Text = "Şifre :";
             // 
             // txtSms
             // 
-            this.txtSms.Location = new System.Drawing.Point(102, 38);
+            this.txtSms.Location = new System.Drawing.Point(130, 32);
             this.txtSms.Name = "txtSms";
             this.txtSms.Size = new System.Drawing.Size(154, 20);
             this.txtSms.TabIndex = 6;
@@ -95,21 +102,27 @@
             // 
             // btnSms
             // 
-            this.btnSms.Location = new System.Drawing.Point(181, 65);
+            this.btnSms.BackColor = System.Drawing.Color.MediumAquamarine;
+            this.btnSms.FlatAppearance.BorderSize = 0;
+            this.btnSms.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnSms.Font = new System.Drawing.Font("Georgia", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.btnSms.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.btnSms.Location = new System.Drawing.Point(209, 59);
             this.btnSms.Name = "btnSms";
-            this.btnSms.Size = new System.Drawing.Size(75, 23);
+            this.btnSms.Size = new System.Drawing.Size(75, 35);
             this.btnSms.TabIndex = 7;
             this.btnSms.Text = "Gönder";
-            this.btnSms.UseVisualStyleBackColor = true;
+            this.btnSms.UseVisualStyleBackColor = false;
             this.btnSms.Visible = false;
             this.btnSms.Click += new System.EventHandler(this.btnSms_Click);
             // 
             // lblSms
             // 
             this.lblSms.AutoSize = true;
-            this.lblSms.Location = new System.Drawing.Point(32, 41);
+            this.lblSms.Font = new System.Drawing.Font("Georgia", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.lblSms.Location = new System.Drawing.Point(46, 34);
             this.lblSms.Name = "lblSms";
-            this.lblSms.Size = new System.Drawing.Size(62, 13);
+            this.lblSms.Size = new System.Drawing.Size(75, 15);
             this.lblSms.TabIndex = 8;
             this.lblSms.Text = "Sms şifresi :";
             this.lblSms.Visible = false;
@@ -121,7 +134,7 @@
             // lblTime
             // 
             this.lblTime.AutoSize = true;
-            this.lblTime.Location = new System.Drawing.Point(102, 68);
+            this.lblTime.Location = new System.Drawing.Point(130, 62);
             this.lblTime.Name = "lblTime";
             this.lblTime.Size = new System.Drawing.Size(0, 13);
             this.lblTime.TabIndex = 9;
@@ -130,7 +143,7 @@
             // lblBekle
             // 
             this.lblBekle.AutoSize = true;
-            this.lblBekle.Location = new System.Drawing.Point(32, 203);
+            this.lblBekle.Location = new System.Drawing.Point(46, 127);
             this.lblBekle.Name = "lblBekle";
             this.lblBekle.Size = new System.Drawing.Size(0, 13);
             this.lblBekle.TabIndex = 11;
@@ -139,7 +152,8 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(330, 148);
+            this.BackColor = System.Drawing.Color.White;
+            this.ClientSize = new System.Drawing.Size(335, 171);
             this.Controls.Add(this.lblBekle);
             this.Controls.Add(this.lblTime);
             this.Controls.Add(this.lblSms);
@@ -150,8 +164,11 @@
             this.Controls.Add(this.txtSifre);
             this.Controls.Add(this.txtMusteriNo);
             this.Controls.Add(this.btnLogin);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.ShowIcon = false;
+            this.Text = "Padok";
             this.ResumeLayout(false);
             this.PerformLayout();
 

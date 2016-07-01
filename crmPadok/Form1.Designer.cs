@@ -153,7 +153,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(335, 171);
+            this.ClientSize = new System.Drawing.Size(340, 177);
             this.Controls.Add(this.lblBekle);
             this.Controls.Add(this.lblTime);
             this.Controls.Add(this.lblSms);
@@ -164,7 +164,6 @@
             this.Controls.Add(this.txtSifre);
             this.Controls.Add(this.txtMusteriNo);
             this.Controls.Add(this.btnLogin);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.ShowIcon = false;

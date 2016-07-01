@@ -1,23 +1,43 @@
 ﻿using System;
 using System.Windows.Forms;
-
+using System.Threading.Tasks;
+using System.Collections.Generic;
 namespace crmPadok
 {
     public partial class Bilgiler : Form
     {
         Crm objCrm;
-        private void btnTelefon_Click(object sender, EventArgs e)
+        private async void btnTelefon_Click(object sender, EventArgs e)
         {
-            if (txtTelefon.Text.Length != 10)
+            List<TelefonFaturalari> liste = new List<TelefonFaturalari>();
+            progressBar1.Value = 0;
+            string[] numaralar = txtTelefon.Text.Split('\n');
+            float progress = (float)100 / (float)numaralar.Length;
+            int i = 0;
+            foreach (var numara in numaralar)
             {
-                MessageBox.Show("Hatalı giriş yaptınız", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                i++;
+                try
+                {
+                    Task<string[]> sorguSonuc = Task.Factory.StartNew(() => objCrm.telefonFatura(numara));
+                    string[] sonuc = await sorguSonuc;
+
+                    if (sonuc.Length >= 10)
+                    {
+                        string isim = sonuc[10]; string faturaDonemi = sonuc[2]; string fiyat = sonuc[1];
+                        txtSonuclar.Text += "İsim: " + isim + " Borç Dönemi: " + faturaDonemi + " Borç: " + fiyat + "\n";
+                        liste.Add(new TelefonFaturalari(numara, isim, faturaDonemi, fiyat));
+                    }
+                    else
+                        txtSonuclar.Text += "--------------\n";
+
+                    progressBar1.Value = Convert.ToInt32(progress * i);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Sorgulama sırasında bir hata oluştu " + ex.Message,"Hata",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                }
             }
-                string[] sonuc= objCrm.telefonFatura(txtTelefon.Text);
-            if(sonuc.Length>=10)
-            MessageBox.Show("İsim: "+sonuc[10]+" Borç Dönemi: "+sonuc[2]+" Borç: "+sonuc[1]);
-            else
-                MessageBox.Show("Kayıt bulunamadı");
         }
         private void btnSorgula_Click(object sender, EventArgs e)
         {

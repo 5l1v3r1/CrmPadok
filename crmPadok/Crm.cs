@@ -11,7 +11,7 @@ namespace crmPadok
    public class Crm
     {
         CookieContainer _container = new CookieContainer();
-    
+        Dictionary<string, string> list = new Dictionary<string, string>();
         public Crm()
         {
             CookieCollection cookies = new CookieCollection();
@@ -239,9 +239,6 @@ namespace crmPadok
         public string[] adslFatura(string numara)
         {
             Encoding encode = Encoding.ASCII;
-
-            Dictionary<string, string> list = new Dictionary<string, string>();
-
             if(list.Count==0)
             list = getHesapNo();
 
@@ -266,12 +263,15 @@ namespace crmPadok
                "kurumOnlineDurum=0&selectedKayitID=&hesapno=" + list["hesapno"] + "&hesapSahibi=+"+list["hesapSahibi"]+ "&bakiye=" + list["bakiye"] + "&hesapTuru=" + list["hesapTuru"]+
                "&meslekkodu=" + list["meslekkodu"] + "&aciklama=" + list["aciklama"] + "&hesapdurumkodu=" + list["hesapdurumkodu"] + "&erisimTipi=1&erisimNo="+numara+"&cmd=telefontahsilatfaturasorgula&h_PageValidation=ON";
             byte[] postData = encode.GetBytes(post);
+
             HttpWebRequest request2 = getRequest(postData);
             string responseHtml = "";
+            //########################################//
             using (HttpWebResponse response = (HttpWebResponse)request2.GetResponse())
             {
-                 responseHtml = (new StreamReader(response.GetResponseStream(), Encoding.Default).ReadToEnd());
+                responseHtml = (new StreamReader(response.GetResponseStream(), Encoding.Default).ReadToEnd());
             }
+            //########################################//
             HtmlDocument doc = new HtmlDocument();
             doc.LoadHtml(responseHtml);
             var node = doc.GetElementbyId("Table3");
@@ -294,8 +294,6 @@ namespace crmPadok
         public string[] telefonFatura(string numara)
         {
             Encoding encode = Encoding.ASCII;
-            Dictionary<string, string> list = new Dictionary<string, string>();
-
             if(list.Count==0)
                 list = getHesapNo();
 

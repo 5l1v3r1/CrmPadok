@@ -103,6 +103,9 @@ namespace crmPadok
                     ((System.Windows.Forms.Timer)sender).Stop();
                     MessageBox.Show("Sms şifresi giriş süreniz doldu lütfen tekrar giriş yapınız","Uyarı",MessageBoxButtons.OK,MessageBoxIcon.Information);
                     #region gizle göster
+                    txtMusteriNo.Text = "";
+                    txtSifre.Text = "";
+                    txtSms.Text = "";
                     txtSms.Visible = false;
                     btnSms.Visible = false;
                     lblSms.Visible = false;

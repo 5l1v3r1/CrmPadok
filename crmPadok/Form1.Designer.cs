@@ -63,6 +63,7 @@
             this.txtMusteriNo.Name = "txtMusteriNo";
             this.txtMusteriNo.Size = new System.Drawing.Size(154, 20);
             this.txtMusteriNo.TabIndex = 1;
+            this.txtMusteriNo.Text = "01846250031";
             // 
             // txtSifre
             // 
@@ -70,6 +71,7 @@
             this.txtSifre.Name = "txtSifre";
             this.txtSifre.Size = new System.Drawing.Size(154, 20);
             this.txtSifre.TabIndex = 2;
+            this.txtSifre.Text = "35077811";
             this.txtSifre.UseSystemPasswordChar = true;
             // 
             // lblMusteri
@@ -168,6 +170,7 @@
             this.Name = "Form1";
             this.ShowIcon = false;
             this.Text = "Padok";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

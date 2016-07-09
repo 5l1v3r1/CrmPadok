@@ -35,10 +35,11 @@
             this.btnTelefon = new System.Windows.Forms.Button();
             this.tabAdslTelefon = new System.Windows.Forms.TabControl();
             this.tabTelefon = new System.Windows.Forms.TabPage();
-            this.tabAdsl = new System.Windows.Forms.TabPage();
-            this.txtTelefon = new System.Windows.Forms.RichTextBox();
-            this.txtSonuclar = new System.Windows.Forms.RichTextBox();
+            this.btnIptal = new System.Windows.Forms.Button();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.txtSonuclar = new System.Windows.Forms.RichTextBox();
+            this.txtTelefon = new System.Windows.Forms.RichTextBox();
+            this.tabAdsl = new System.Windows.Forms.TabPage();
             this.tabAdslTelefon.SuspendLayout();
             this.tabTelefon.SuspendLayout();
             this.tabAdsl.SuspendLayout();
@@ -91,7 +92,7 @@
             this.btnTelefon.FlatAppearance.BorderSize = 0;
             this.btnTelefon.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnTelefon.Font = new System.Drawing.Font("Georgia", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.btnTelefon.Location = new System.Drawing.Point(406, 169);
+            this.btnTelefon.Location = new System.Drawing.Point(316, 574);
             this.btnTelefon.Name = "btnTelefon";
             this.btnTelefon.Size = new System.Drawing.Size(75, 35);
             this.btnTelefon.TabIndex = 20;
@@ -106,11 +107,12 @@
             this.tabAdslTelefon.Location = new System.Drawing.Point(0, 1);
             this.tabAdslTelefon.Name = "tabAdslTelefon";
             this.tabAdslTelefon.SelectedIndex = 0;
-            this.tabAdslTelefon.Size = new System.Drawing.Size(954, 596);
+            this.tabAdslTelefon.Size = new System.Drawing.Size(1200, 673);
             this.tabAdslTelefon.TabIndex = 22;
             // 
             // tabTelefon
             // 
+            this.tabTelefon.Controls.Add(this.btnIptal);
             this.tabTelefon.Controls.Add(this.progressBar1);
             this.tabTelefon.Controls.Add(this.btnTelefon);
             this.tabTelefon.Controls.Add(this.txtSonuclar);
@@ -119,23 +121,36 @@
             this.tabTelefon.Location = new System.Drawing.Point(4, 22);
             this.tabTelefon.Name = "tabTelefon";
             this.tabTelefon.Padding = new System.Windows.Forms.Padding(3);
-            this.tabTelefon.Size = new System.Drawing.Size(946, 570);
+            this.tabTelefon.Size = new System.Drawing.Size(1192, 647);
             this.tabTelefon.TabIndex = 0;
             this.tabTelefon.Text = "Telefon Sorgula";
             this.tabTelefon.UseVisualStyleBackColor = true;
             // 
-            // tabAdsl
+            // btnIptal
             // 
-            this.tabAdsl.Controls.Add(this.btnSorgula);
-            this.tabAdsl.Controls.Add(this.label1);
-            this.tabAdsl.Controls.Add(this.txtAdsl);
-            this.tabAdsl.Location = new System.Drawing.Point(4, 22);
-            this.tabAdsl.Name = "tabAdsl";
-            this.tabAdsl.Padding = new System.Windows.Forms.Padding(3);
-            this.tabAdsl.Size = new System.Drawing.Size(946, 570);
-            this.tabAdsl.TabIndex = 1;
-            this.tabAdsl.Text = "Adsl Sorgula";
-            this.tabAdsl.UseVisualStyleBackColor = true;
+            this.btnIptal.Location = new System.Drawing.Point(1077, 576);
+            this.btnIptal.Name = "btnIptal";
+            this.btnIptal.Size = new System.Drawing.Size(75, 33);
+            this.btnIptal.TabIndex = 25;
+            this.btnIptal.Text = "İptal";
+            this.btnIptal.UseVisualStyleBackColor = true;
+            this.btnIptal.Click += new System.EventHandler(this.btnIptal_Click);
+            // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(496, 547);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(656, 23);
+            this.progressBar1.TabIndex = 24;
+            // 
+            // txtSonuclar
+            // 
+            this.txtSonuclar.Location = new System.Drawing.Point(496, 20);
+            this.txtSonuclar.Name = "txtSonuclar";
+            this.txtSonuclar.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
+            this.txtSonuclar.Size = new System.Drawing.Size(656, 525);
+            this.txtSonuclar.TabIndex = 23;
+            this.txtSonuclar.Text = "";
             // 
             // txtTelefon
             // 
@@ -146,21 +161,18 @@
             this.txtTelefon.TabIndex = 22;
             this.txtTelefon.Text = "";
             // 
-            // txtSonuclar
+            // tabAdsl
             // 
-            this.txtSonuclar.Location = new System.Drawing.Point(496, 20);
-            this.txtSonuclar.Name = "txtSonuclar";
-            this.txtSonuclar.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.txtSonuclar.Size = new System.Drawing.Size(319, 525);
-            this.txtSonuclar.TabIndex = 23;
-            this.txtSonuclar.Text = "";
-            // 
-            // progressBar1
-            // 
-            this.progressBar1.Location = new System.Drawing.Point(123, 547);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(692, 23);
-            this.progressBar1.TabIndex = 24;
+            this.tabAdsl.Controls.Add(this.btnSorgula);
+            this.tabAdsl.Controls.Add(this.label1);
+            this.tabAdsl.Controls.Add(this.txtAdsl);
+            this.tabAdsl.Location = new System.Drawing.Point(4, 22);
+            this.tabAdsl.Name = "tabAdsl";
+            this.tabAdsl.Padding = new System.Windows.Forms.Padding(3);
+            this.tabAdsl.Size = new System.Drawing.Size(1192, 647);
+            this.tabAdsl.TabIndex = 1;
+            this.tabAdsl.Text = "Adsl Sorgula";
+            this.tabAdsl.UseVisualStyleBackColor = true;
             // 
             // Bilgiler
             // 
@@ -168,7 +180,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnablePreventFocusChange;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(957, 596);
+            this.ClientSize = new System.Drawing.Size(1201, 670);
             this.Controls.Add(this.tabAdslTelefon);
             this.MaximizeBox = false;
             this.Name = "Bilgiler";
@@ -196,5 +208,6 @@
         private System.Windows.Forms.RichTextBox txtTelefon;
         private System.Windows.Forms.TabPage tabAdsl;
         private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.Button btnIptal;
     }
 }

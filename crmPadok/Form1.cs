@@ -9,17 +9,18 @@ namespace crmPadok
         public Form1()
         {
             InitializeComponent();
+            
         }
         private async void btnLogin_Click(object sender, EventArgs e)
         {
-            
+            Task<bool> taskSonuc;
             if (txtMusteriNo.Text.Length != 11 || txtSifre.Text.Length != 8)
             {
                 MessageBox.Show("Müsteri no 11,şifre 8 karakter uzunluğunda olmalıdır.", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
          
-            Task<bool> taskSonuc = Task.Factory.StartNew(() => objCrm.login(txtMusteriNo.Text, txtSifre.Text));
+            taskSonuc = Task.Factory.StartNew(() => objCrm.login(txtMusteriNo.Text, txtSifre.Text));
             lblBekle.Text = "Giriş yapılıyor...";
             btnLogin.Enabled = false;
             bool sonuc = await taskSonuc;
@@ -34,7 +35,8 @@ namespace crmPadok
                 btnLogin.Visible = false;
                 btnSms.Visible = true;
                 txtSms.Visible = true;
-                lblSms.Visible = true; 
+                lblSms.Visible = true;
+                txtSifre.Focus();
                 #endregion
                 timer();
             }
@@ -123,5 +125,9 @@ namespace crmPadok
             };
         }
 
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            txtMusteriNo.Focus();
+        }
     }
 }

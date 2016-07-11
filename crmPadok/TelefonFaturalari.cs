@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace crmPadok
 {
-    class TelefonFaturalari
+    class Faturalar
     {
-        string telNo, isim, faturaDonemi, fiyat;
+        string aboneNo, isim, faturaDonemi, fiyat;
 
         public string FaturaDonemi
         {
@@ -36,16 +36,16 @@ namespace crmPadok
             }
         }
 
-        public string TelNo
+        public string AboneNo
         {
             get
             {
-                return telNo;
+                return aboneNo;
             }
 
             set
             {
-                telNo = value;
+                aboneNo = value;
             }
         }
 
@@ -63,11 +63,11 @@ namespace crmPadok
         }
         public override string ToString()
         {
-            return telNo + " " + isim + " " + faturaDonemi + " " + fiyat + " TL";
+            return aboneNo + "=> İsim: " + isim + " Fatura Dönemi: " + faturaDonemi + " Borç: " + fiyat + " TL";
         }
-        public TelefonFaturalari(string telNo, string isim, string faturaDonemi, string fiyat)
+        public Faturalar(string aboneNo, string isim, string faturaDonemi, string fiyat)
         {
-            this.TelNo = telNo;
+            this.AboneNo = aboneNo;
             this.Isim = isim;
             this.FaturaDonemi = faturaDonemi;
             this.Fiyat = fiyat;

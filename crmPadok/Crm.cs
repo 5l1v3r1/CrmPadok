@@ -57,6 +57,7 @@ namespace crmPadok
                 cookies = response.Cookies;
                 response.Close();
                 _container.Add(cookies);
+               
             }
             catch (Exception)
             {
@@ -82,8 +83,14 @@ namespace crmPadok
                 string sifre = password;
                 sifre = WebUtility.UrlEncode(sifre);
 
-                string fields = "TcNo=" + tcNo + "&" + "cmd=" + cmd + "&" + "h_PageValidation=" + h_PageValidation + "&" +
-                    "secimtipi=" + secimtipi + "&" + "sifreK=" + sifreK + "&" + "musteriNo=" + musteriNo + "&" + "sifreM=" + sifre;
+                string fields = "TcNo="+ tcNo 
+                    + "&cmd=" + cmd 
+                    + "&h_PageValidation=" + h_PageValidation 
+                    + "&secimtipi=" + secimtipi 
+                    + "&sifreK=" + sifreK 
+                    + "&musteriNo=" + musteriNo 
+                    + "&sifreM=" + sifre;
+
                 byte[] data = encode.GetBytes(fields);
                 HttpWebRequest request = getRequest(data);
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
@@ -97,7 +104,8 @@ namespace crmPadok
                                 !strResponse.Contains("UYARI:(P10012)")&&
                                 !strResponse.Contains("UYARI:(P00120)")&&
                                 !strResponse.Contains("UYARI:(P10006)")&&
-                                !strResponse.Contains("UYARI:(P10005)"))
+                                !strResponse.Contains("UYARI:(P10005)")&&
+                                !strResponse.Contains("UYARI:(P00031)"))
                                 return true;
                             else
                                 return false;
@@ -177,8 +185,11 @@ namespace crmPadok
                   HtmlAgilityPack. HtmlDocument doc1 = new HtmlAgilityPack. HtmlDocument();
                     doc1.LoadHtml((new StreamReader(response.GetResponseStream(), Encoding.Default)).ReadToEnd());
                     var node = doc1.DocumentNode.SelectNodes("//table//center//option");
-                    list.Add("hesapno", node[0].NextSibling.InnerHtml);
-                    hesapnoPlText=(node[0].OuterHtml.ToString()).Substring(15, 15);
+                    if (node != null)
+                    {
+                        list.Add("hesapno", node[0].NextSibling.InnerHtml);
+                        hesapnoPlText = (node[0].OuterHtml.ToString()).Substring(15, 15);
+                    }
                 }
                 string cmd = WebUtility.UrlEncode("kurumtahsilatkurumbilgileri");
                 string h_PageValidation = WebUtility.UrlEncode("ON");
@@ -196,64 +207,70 @@ namespace crmPadok
                 HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
                 doc.LoadHtml(htmlText);
                 var nodes = doc.DocumentNode.SelectNodes("//table//tr/td");
-                for (int i = 0; i < nodes.Count; i++)
+                if (nodes != null)
                 {
-                    if (nodes[i].InnerHtml == "HESAP SAHİBİ")
+                    for (int i = 0; i < nodes.Count; i++)
                     {
-                        list.Add("hesapSahibi", WebUtility.UrlEncode(nodes[i + 1].InnerText));
-                    }
-                    if (nodes[i].InnerHtml == "KULLANILABİLİR BAKİYE")
-                    {
-                        list.Add("kullanilabirbakiye", (nodes[i + 1].InnerText).Trim().Replace("nbsp", ""));
+                        if (nodes[i].InnerHtml == "HESAP SAHİBİ")
+                        {
+                            list.Add("hesapSahibi", WebUtility.UrlEncode(nodes[i + 1].InnerText));
+                        }
+                        if (nodes[i].InnerHtml == "KULLANILABİLİR BAKİYE")
+                        {
+                            list.Add("kullanilabirbakiye", (nodes[i + 1].InnerText).Trim().Replace("nbsp", ""));
+                        }
                     }
                 }
                 nodes = doc.DocumentNode.SelectNodes("//table//tr//input");
-                foreach (var node in nodes)
+                if (nodes != null)
                 {
-                    if (node.OuterHtml.Contains("bakiye")&&!node.OuterHtml.Contains("kullanilabilirbakiye"))
+                    foreach (var node in nodes)
                     {
-                        string nodetext = node.OuterHtml.ToString();
-                        list.Add("bakiye",((nodetext.Substring(nodetext.IndexOf("value="))).Replace("value=", "")).Trim('"', '<', '>', ' ').Replace("'", "").Replace("nbsp", " "));
-                    }
-                    else if (node.OuterHtml.Contains("hesapTuru"))
-                    {
-                        string nodetext = node.OuterHtml.ToString();
-                        list.Add("hesapTuru",((nodetext.Substring(nodetext.IndexOf("value="))).Replace("value=", "")).Trim('"', '<', '>', ' ').Replace("'", "").Replace("&nbsp;", " "));
-                    }
-                    else if (node.OuterHtml.Contains("meslekkodu"))
-                    {
-                        string nodetext = node.OuterHtml.ToString();
-                        list.Add("meslekkodu",((nodetext.Substring(nodetext.IndexOf("value="))).Replace("value=", "")).Trim('"', '<', '>', ' ').Replace("'", "").Replace("&nbsp;", " "));
-                    }
-                    else if (node.OuterHtml.Contains("aciklama"))
-                    {
-                        string nodetext = node.OuterHtml.ToString();
-                        list.Add("aciklama", ((nodetext.Substring(nodetext.IndexOf("value="))).Replace("value=", "")).Trim('"', '<', '>', ' ').Replace("'", "").Replace("&nbsp;", " "));
-                    }
-                    else if (node.OuterHtml.Contains("hesapdurumkodu"))
-                    {
-                        string nodetext = node.OuterHtml.ToString();
-                        list.Add("hesapdurumkodu",( (nodetext.Substring(nodetext.IndexOf("value="))).Replace("value=", "")).Trim('"', '<', '>', ' ').Replace("'", "").Replace("&nbsp;", " "));
-                    }
-                    else if (node.OuterHtml.Contains("kullanilabilirkmh"))
-                    {
-                        string nodetext = node.OuterHtml.ToString();
-                        list.Add("kullanilabilirkmh", ((nodetext.Substring(nodetext.IndexOf("value="))).Replace("value=", "")).Trim('"', '<', '>', ' ').Replace("'", "").Replace("&nbsp;", " "));
-                    }
-                    else if (node.OuterHtml.Contains("kmhdurum"))
-                    {
-                        string nodetext = node.OuterHtml.ToString();
-                        list.Add("kmhdurum", ((nodetext.Substring(nodetext.IndexOf("value="))).Replace("value=", "")).Trim('"', '<', '>', ' ').Replace("'", "").Replace("&nbsp;", " "));
-                    }
-                    else if (node.OuterHtml.Contains("vergino"))
-                    {
-                        string nodetext = node.OuterHtml.ToString();
-                        list.Add("vergino",((nodetext.Substring(nodetext.IndexOf("value="))).Replace("value=", "")).Trim('"', '<', '>', ' ').Replace("'", "").Replace("&nbsp;", " "));
-                    }
-                    else if (node.OuterHtml.Contains("kimlikno"))
-                    {
-                        string nodetext = node.OuterHtml.ToString();
-                        list.Add("kimlikno",((nodetext.Substring(nodetext.IndexOf("value="))).Replace("value=", "")).Trim('"', '<', '>', ' ').Replace("'", "").Replace("&nbsp;", " "));
+                        if (node.OuterHtml.Contains("bakiye") && !node.OuterHtml.Contains("kullanilabilirbakiye"))
+                        {
+                            string nodetext = node.OuterHtml.ToString();
+                            list.Add("bakiye", ((nodetext.Substring(nodetext.IndexOf("value="))).Replace("value=", "")).Trim('"', '<', '>', ' ').Replace("'", "").Replace("nbsp", " "));
+                        }
+                        else if (node.OuterHtml.Contains("hesapTuru"))
+                        {
+                            string nodetext = node.OuterHtml.ToString();
+                            list.Add("hesapTuru", ((nodetext.Substring(nodetext.IndexOf("value="))).Replace("value=", "")).Trim('"', '<', '>', ' ').Replace("'", "").Replace("&nbsp;", " "));
+                        }
+                        else if (node.OuterHtml.Contains("meslekkodu"))
+                        {
+                            string nodetext = node.OuterHtml.ToString();
+                            list.Add("meslekkodu", ((nodetext.Substring(nodetext.IndexOf("value="))).Replace("value=", "")).Trim('"', '<', '>', ' ').Replace("'", "").Replace("&nbsp;", " "));
+                        }
+                        else if (node.OuterHtml.Contains("aciklama"))
+                        {
+                            string nodetext = node.OuterHtml.ToString();
+                            list.Add("aciklama", ((nodetext.Substring(nodetext.IndexOf("value="))).Replace("value=", "")).Trim('"', '<', '>', ' ').Replace("'", "").Replace("&nbsp;", " "));
+                        }
+                        else if (node.OuterHtml.Contains("hesapdurumkodu"))
+                        {
+                            string nodetext = node.OuterHtml.ToString();
+                            list.Add("hesapdurumkodu", ((nodetext.Substring(nodetext.IndexOf("value="))).Replace("value=", "")).Trim('"', '<', '>', ' ').Replace("'", "").Replace("&nbsp;", " "));
+                        }
+                        else if (node.OuterHtml.Contains("kullanilabilirkmh"))
+                        {
+                            string nodetext = node.OuterHtml.ToString();
+                            list.Add("kullanilabilirkmh", ((nodetext.Substring(nodetext.IndexOf("value="))).Replace("value=", "")).Trim('"', '<', '>', ' ').Replace("'", "").Replace("&nbsp;", " "));
+                        }
+                        else if (node.OuterHtml.Contains("kmhdurum"))
+                        {
+                            string nodetext = node.OuterHtml.ToString();
+                            list.Add("kmhdurum", ((nodetext.Substring(nodetext.IndexOf("value="))).Replace("value=", "")).Trim('"', '<', '>', ' ').Replace("'", "").Replace("&nbsp;", " "));
+                        }
+                        else if (node.OuterHtml.Contains("vergino"))
+                        {
+                            string nodetext = node.OuterHtml.ToString();
+                            list.Add("vergino", ((nodetext.Substring(nodetext.IndexOf("value="))).Replace("value=", "")).Trim('"', '<', '>', ' ').Replace("'", "").Replace("&nbsp;", " "));
+                        }
+                        else if (node.OuterHtml.Contains("kimlikno"))
+                        {
+                            string nodetext = node.OuterHtml.ToString();
+                            list.Add("kimlikno", ((nodetext.Substring(nodetext.IndexOf("value="))).Replace("value=", "")).Trim('"', '<', '>', ' ').Replace("'", "").Replace("&nbsp;", " "));
+                        }
                     }
                 }
                 list.Add("kurumId", WebUtility.UrlEncode("60"));
@@ -269,131 +286,131 @@ namespace crmPadok
                 list.Add("kurumGirisTipi", WebUtility.UrlEncode("1"));
                 list.Add("kurumOnlineDurum", WebUtility.UrlEncode("0"));
                 list.Add("kurumParaCinsiKod", WebUtility.UrlEncode("TL"));
-                File.AppendAllText("C:\\users\\galatasaray\\desktop\\cookiefile.txt", _container.GetCookies(new Uri("https://ipc2.ptt.gov.tr/pttwebapproot/ipcservlet")).ToString());
+                File.WriteAllText("C:\\users\\galatasaray\\desktop\\cookiefile.txt", _container.GetCookieHeader(new Uri("https://ipc2.ptt.gov.tr/pttwebapproot/ipcservlet")).ToString());
                 return list;
             }
             catch (Exception)
             {
-              
                 return null;
             }
         }
-        public string[] adslFatura(string numara)
-        {
-            try
-            {
-                Encoding encode = Encoding.ASCII;
 
-                string fields = "";
+        //public string[] adslFatura(string numara)
+        //{
+        //    try
+        //    {
+        //        Encoding encode = Encoding.ASCII;
 
-                foreach (var key in List)
-                {
-                    fields += key.Key + "=" + key.Value + "&";
-                }
-                fields = fields.Remove(fields.Length - 1, 1);
-                byte[] data = encode.GetBytes(fields);
+        //        string fields = "";
 
-                HttpWebRequest request = getRequest(data);
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-                {
-                    string responseText = (new StreamReader(response.GetResponseStream(), Encoding.Default)).ReadToEnd();
-                }
+        //        foreach (var key in List)
+        //        {
+        //            fields += key.Key + "=" + key.Value + "&";
+        //        }
+        //        fields = fields.Remove(fields.Length - 1, 1);
+        //        byte[] data = encode.GetBytes(fields);
 
-                string post = "kurumId=60&kurumKod=5&kurumAd=TURKTELEKOM&" +
-                    "kurumParaCinsiId=3&kurumParaCinsiText=Yeni+T%FCrk+Liras%FD&kurumJspAdi=ipc%2FIPCTurkTelekomTahsilatGiris.jsp&" +
-                    "kurumTahsilatTipi=TELEFON&kurumMesajTipi=510&kurumIslemTuru=TELEFON&kurumAciklama=T%DCRK+TELEKOM+%DDNTERNET+%28TTNET%29&kurumParaCinsiKod=TL&" +
-                    "kurumOnlineDurum=0&selectedKayitID=&hesapno=" + List["hesapno"] + "&hesapSahibi=+" + List["hesapSahibi"] + "&bakiye=" + List["bakiye"] + "&hesapTuru=" + List["hesapTuru"] +
-                    "&meslekkodu=" + List["meslekkodu"] + "&aciklama=" + List["aciklama"] + "&hesapdurumkodu=" + List["hesapdurumkodu"] + "&erisimTipi=1&erisimNo=" + numara + "&cmd=telefontahsilatfaturasorgula&h_PageValidation=ON";
-                byte[] postData = encode.GetBytes(post);
+        //        HttpWebRequest request = getRequest(data);
+        //        using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+        //        {
+        //            string responseText = (new StreamReader(response.GetResponseStream(), Encoding.Default)).ReadToEnd();
+        //        }
 
-                HttpWebRequest request2 = getRequest(postData);
-                string responseHtml = "";
-                //########################################//
-                using (HttpWebResponse response = (HttpWebResponse)request2.GetResponse())
-                {
-                    responseHtml = (new StreamReader(response.GetResponseStream(), Encoding.Default).ReadToEnd());
-                }
-                //########################################//
-                HtmlDocument doc = new HtmlDocument();
-                doc.LoadHtml(responseHtml);
-                var node = doc.GetElementbyId("Table3");
-                string text2 = "";
-                var nodes = doc.DocumentNode.SelectNodes("//input");
-                if (nodes != null)
-                {
-                    foreach (var item in nodes)
-                    {
-                        if (item.OuterHtml.Contains("checkbox"))
-                        {
-                            text2 = item.OuterHtml.ToString();
-                        }
-                    }
-                }
-                string[] text = text2.Split('@');
-                return text;
-            }
-            catch (Exception)
-            {
+        //        string post = "kurumId=60&kurumKod=5&kurumAd=TURKTELEKOM&" +
+        //            "kurumParaCinsiId=3&kurumParaCinsiText=Yeni+T%FCrk+Liras%FD&kurumJspAdi=ipc%2FIPCTurkTelekomTahsilatGiris.jsp&" +
+        //            "kurumTahsilatTipi=TELEFON&kurumMesajTipi=510&kurumIslemTuru=TELEFON&kurumAciklama=T%DCRK+TELEKOM+%DDNTERNET+%28TTNET%29&kurumParaCinsiKod=TL&" +
+        //            "kurumOnlineDurum=0&selectedKayitID=&hesapno=" + List["hesapno"] + "&hesapSahibi=+" + List["hesapSahibi"] + "&bakiye=" + List["bakiye"] + "&hesapTuru=" + List["hesapTuru"] +
+        //            "&meslekkodu=" + List["meslekkodu"] + "&aciklama=" + List["aciklama"] + "&hesapdurumkodu=" + List["hesapdurumkodu"] + "&erisimTipi=1&erisimNo=" + numara + "&cmd=telefontahsilatfaturasorgula&h_PageValidation=ON";
+        //        byte[] postData = encode.GetBytes(post);
 
-                return new string[] { };
-            }
+        //        HttpWebRequest request2 = getRequest(postData);
+        //        string responseHtml = "";
+        //        //########################################//
+        //        using (HttpWebResponse response = (HttpWebResponse)request2.GetResponse())
+        //        {
+        //            responseHtml = (new StreamReader(response.GetResponseStream(), Encoding.Default).ReadToEnd());
+        //        }
+        //        //########################################//
+        //        HtmlDocument doc = new HtmlDocument();
+        //        doc.LoadHtml(responseHtml);
+        //        var node = doc.GetElementbyId("Table3");
+        //        string text2 = "";
+        //        var nodes = doc.DocumentNode.SelectNodes("//input");
+        //        if (nodes != null)
+        //        {
+        //            foreach (var item in nodes)
+        //            {
+        //                if (item.OuterHtml.Contains("checkbox"))
+        //                {
+        //                    text2 = item.OuterHtml.ToString();
+        //                }
+        //            }
+        //        }
+        //        string[] text = text2.Split('@');
+        //        return text;
+        //    }
+        //    catch (Exception)
+        //    {
 
-        }
-        public string[] telefonFatura(string numara)
-        {
-            try
-            {
-                if (list.Count == 0)
-                    this.list = getHesapNo();
-                Bilgiler.token.ThrowIfCancellationRequested();
-                Encoding encode = Encoding.ASCII;
-                string fields = "";
-                foreach (var key in List)
-                    fields += key.Key + "=" + key.Value + "&";
+        //        return new string[] { };
+        //    }
 
-                fields = fields.Remove(fields.Length - 1, 1);
-                byte[] data = encode.GetBytes(fields);
-                HttpWebRequest request = getRequest(data);
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-                {
-                    string responseText = (new StreamReader(response.GetResponseStream(), Encoding.Default)).ReadToEnd();
-                }
+        //}
+        //public string[] telefonFatura(string numara)
+        //{
+        //    try
+        //    {
+        //        if (list.Count == 0)
+        //            this.list = getHesapNo();
+                
+        //        Encoding encode = Encoding.ASCII;
+        //        string fields = "";
+        //        foreach (var key in List)
+        //            fields += key.Key + "=" + key.Value + "&";
 
-                string post = "kurumId=63&kurumKod=2&kurumAd=TURKTELEKOM&" +
-                   "kurumParaCinsiId=3&kurumParaCinsiText=Yeni+T%FCrk+Liras%FD&kurumJspAdi=ipc%2FIPCTurkTelekomTahsilatGiris.jsp&" +
-                   "kurumTahsilatTipi=TELEFON&kurumMesajTipi=500&kurumIslemTuru=TELEFON&kurumAciklama=TÜRK TELEKOM EV ÝÞ TELEFONU&kurumParaCinsiKod=TL&" +
-                   "kurumOnlineDurum=0&selectedKayitID=&hesapno=" + List["hesapno"] + "&hesapSahibi=+" + List["hesapSahibi"] + "&bakiye=" + List["bakiye"] + "&hesapTuru=" + List["hesapTuru"] +
-                   "&meslekkodu=" + List["meslekkodu"] + "&aciklama=" + List["aciklama"] + "&hesapdurumkodu=" + List["hesapdurumkodu"] + "&erisimTipi=1&erisimNo=" + numara + "&cmd=telefontahsilatfaturasorgula&h_PageValidation=ON";
-                byte[] postData = encode.GetBytes(post);
-                HttpWebRequest request2 = getRequest(postData);
-                string responseHtml = "";
-                using (HttpWebResponse response = (HttpWebResponse)request2.GetResponse())
-                {
-                    responseHtml = (new StreamReader(response.GetResponseStream(), Encoding.Default).ReadToEnd());
-                }
-                HtmlDocument doc = new HtmlDocument();
-                doc.LoadHtml(responseHtml);
-                var node = doc.GetElementbyId("Table3");
-                string text2 = "";
-                var nodes = doc.DocumentNode.SelectNodes("//input");
-                if (nodes != null)
-                {
-                    foreach (var item in nodes)
-                    {
-                        if (item.OuterHtml.Contains("checkbox"))
-                        {
-                            text2 = item.OuterHtml.ToString();
-                        }
-                    }
-                }
-                string[] text = text2.Split('@');
-                return text;
-            }
-            catch (Exception)
-            {
+        //        fields = fields.Remove(fields.Length - 1, 1);
+        //        byte[] data = encode.GetBytes(fields);
+        //        HttpWebRequest request = getRequest(data);
+        //        using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+        //        {
+        //            string responseText = (new StreamReader(response.GetResponseStream(), Encoding.Default)).ReadToEnd();
+        //        }
 
-                return new string[] { };
-            }
-        }
+        //        string post = "kurumId=63&kurumKod=2&kurumAd=TURKTELEKOM&" +
+        //           "kurumParaCinsiId=3&kurumParaCinsiText=Yeni+T%FCrk+Liras%FD&kurumJspAdi=ipc%2FIPCTurkTelekomTahsilatGiris.jsp&" +
+        //           "kurumTahsilatTipi=TELEFON&kurumMesajTipi=500&kurumIslemTuru=TELEFON&kurumAciklama=TÜRK TELEKOM EV ÝÞ TELEFONU&kurumParaCinsiKod=TL&" +
+        //           "kurumOnlineDurum=0&selectedKayitID=&hesapno=" + List["hesapno"] + "&hesapSahibi=+" + List["hesapSahibi"] + "&bakiye=" + List["bakiye"] + "&hesapTuru=" + List["hesapTuru"] +
+        //           "&meslekkodu=" + List["meslekkodu"] + "&aciklama=" + List["aciklama"] + "&hesapdurumkodu=" + List["hesapdurumkodu"] + "&erisimTipi=1&erisimNo=" + numara + "&cmd=telefontahsilatfaturasorgula&h_PageValidation=ON";
+        //        byte[] postData = encode.GetBytes(post);
+        //        HttpWebRequest request2 = getRequest(postData);
+        //        string responseHtml = "";
+        //        using (HttpWebResponse response = (HttpWebResponse)request2.GetResponse())
+        //        {
+        //            responseHtml = (new StreamReader(response.GetResponseStream(), Encoding.Default).ReadToEnd());
+        //        }
+        //        HtmlDocument doc = new HtmlDocument();
+        //        doc.LoadHtml(responseHtml);
+        //        var node = doc.GetElementbyId("Table3");
+        //        string text2 = "";
+        //        var nodes = doc.DocumentNode.SelectNodes("//input");
+        //        if (nodes != null)
+        //        {
+        //            foreach (var item in nodes)
+        //            {
+        //                if (item.OuterHtml.Contains("checkbox"))
+        //                {
+        //                    text2 = item.OuterHtml.ToString();
+        //                }
+        //            }
+        //        }
+        //        string[] text = text2.Split('@');
+        //        return text;
+        //    }
+        //    catch (Exception)
+        //    {
+
+        //        return new string[] { };
+        //    }
+        //}
     }
 }

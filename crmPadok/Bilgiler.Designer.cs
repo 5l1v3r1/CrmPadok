@@ -28,8 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.txtAdsl = new System.Windows.Forms.TextBox();
-            this.btnSorgula = new System.Windows.Forms.Button();
+            this.btnAdslSorgula = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.btnTelefon = new System.Windows.Forms.Button();
@@ -40,37 +39,34 @@
             this.txtSonuclar = new System.Windows.Forms.RichTextBox();
             this.txtTelefon = new System.Windows.Forms.RichTextBox();
             this.tabAdsl = new System.Windows.Forms.TabPage();
+            this.btnAdslIptal = new System.Windows.Forms.Button();
+            this.prgAdsl = new System.Windows.Forms.ProgressBar();
+            this.txtAdslSonuc = new System.Windows.Forms.RichTextBox();
+            this.txtAdsl = new System.Windows.Forms.RichTextBox();
             this.tabAdslTelefon.SuspendLayout();
             this.tabTelefon.SuspendLayout();
             this.tabAdsl.SuspendLayout();
             this.SuspendLayout();
             // 
-            // txtAdsl
+            // btnAdslSorgula
             // 
-            this.txtAdsl.Location = new System.Drawing.Point(326, 77);
-            this.txtAdsl.Name = "txtAdsl";
-            this.txtAdsl.Size = new System.Drawing.Size(158, 20);
-            this.txtAdsl.TabIndex = 16;
-            // 
-            // btnSorgula
-            // 
-            this.btnSorgula.BackColor = System.Drawing.Color.MediumAquamarine;
-            this.btnSorgula.FlatAppearance.BorderSize = 0;
-            this.btnSorgula.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSorgula.Font = new System.Drawing.Font("Georgia", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.btnSorgula.Location = new System.Drawing.Point(409, 103);
-            this.btnSorgula.Name = "btnSorgula";
-            this.btnSorgula.Size = new System.Drawing.Size(75, 35);
-            this.btnSorgula.TabIndex = 17;
-            this.btnSorgula.Text = "Sorgula";
-            this.btnSorgula.UseVisualStyleBackColor = false;
-            this.btnSorgula.Click += new System.EventHandler(this.btnSorgula_Click);
+            this.btnAdslSorgula.BackColor = System.Drawing.Color.MediumAquamarine;
+            this.btnAdslSorgula.FlatAppearance.BorderSize = 0;
+            this.btnAdslSorgula.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAdslSorgula.Font = new System.Drawing.Font("Georgia", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.btnAdslSorgula.Location = new System.Drawing.Point(322, 580);
+            this.btnAdslSorgula.Name = "btnAdslSorgula";
+            this.btnAdslSorgula.Size = new System.Drawing.Size(75, 35);
+            this.btnAdslSorgula.TabIndex = 17;
+            this.btnAdslSorgula.Text = "Sorgula";
+            this.btnAdslSorgula.UseVisualStyleBackColor = false;
+            this.btnAdslSorgula.Click += new System.EventHandler(this.btnSorgula_Click);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Georgia", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.label1.Location = new System.Drawing.Point(257, 78);
+            this.label1.Location = new System.Drawing.Point(22, 24);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(55, 15);
             this.label1.TabIndex = 18;
@@ -163,9 +159,12 @@
             // 
             // tabAdsl
             // 
-            this.tabAdsl.Controls.Add(this.btnSorgula);
-            this.tabAdsl.Controls.Add(this.label1);
+            this.tabAdsl.Controls.Add(this.btnAdslIptal);
+            this.tabAdsl.Controls.Add(this.prgAdsl);
+            this.tabAdsl.Controls.Add(this.txtAdslSonuc);
             this.tabAdsl.Controls.Add(this.txtAdsl);
+            this.tabAdsl.Controls.Add(this.btnAdslSorgula);
+            this.tabAdsl.Controls.Add(this.label1);
             this.tabAdsl.Location = new System.Drawing.Point(4, 22);
             this.tabAdsl.Name = "tabAdsl";
             this.tabAdsl.Padding = new System.Windows.Forms.Padding(3);
@@ -173,6 +172,41 @@
             this.tabAdsl.TabIndex = 1;
             this.tabAdsl.Text = "Adsl Sorgula";
             this.tabAdsl.UseVisualStyleBackColor = true;
+            // 
+            // btnAdslIptal
+            // 
+            this.btnAdslIptal.Location = new System.Drawing.Point(1081, 580);
+            this.btnAdslIptal.Name = "btnAdslIptal";
+            this.btnAdslIptal.Size = new System.Drawing.Size(75, 33);
+            this.btnAdslIptal.TabIndex = 27;
+            this.btnAdslIptal.Text = "İptal";
+            this.btnAdslIptal.UseVisualStyleBackColor = true;
+            this.btnAdslIptal.Click += new System.EventHandler(this.btnAdslIptal_Click);
+            // 
+            // prgAdsl
+            // 
+            this.prgAdsl.Location = new System.Drawing.Point(500, 551);
+            this.prgAdsl.Name = "prgAdsl";
+            this.prgAdsl.Size = new System.Drawing.Size(656, 23);
+            this.prgAdsl.TabIndex = 26;
+            // 
+            // txtAdslSonuc
+            // 
+            this.txtAdslSonuc.Location = new System.Drawing.Point(500, 20);
+            this.txtAdslSonuc.Name = "txtAdslSonuc";
+            this.txtAdslSonuc.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
+            this.txtAdslSonuc.Size = new System.Drawing.Size(656, 525);
+            this.txtAdslSonuc.TabIndex = 24;
+            this.txtAdslSonuc.Text = "";
+            // 
+            // txtAdsl
+            // 
+            this.txtAdsl.Location = new System.Drawing.Point(129, 22);
+            this.txtAdsl.Name = "txtAdsl";
+            this.txtAdsl.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
+            this.txtAdsl.Size = new System.Drawing.Size(268, 525);
+            this.txtAdsl.TabIndex = 23;
+            this.txtAdsl.Text = "";
             // 
             // Bilgiler
             // 
@@ -197,8 +231,7 @@
         }
 
         #endregion
-        private System.Windows.Forms.TextBox txtAdsl;
-        private System.Windows.Forms.Button btnSorgula;
+        private System.Windows.Forms.Button btnAdslSorgula;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button btnTelefon;
@@ -209,5 +242,9 @@
         private System.Windows.Forms.TabPage tabAdsl;
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.Button btnIptal;
+        private System.Windows.Forms.Button btnAdslIptal;
+        private System.Windows.Forms.ProgressBar prgAdsl;
+        private System.Windows.Forms.RichTextBox txtAdsl;
+        private System.Windows.Forms.RichTextBox txtAdslSonuc;
     }
 }

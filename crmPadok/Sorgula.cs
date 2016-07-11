@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace crmPadok
@@ -62,12 +63,10 @@ namespace crmPadok
             return request;
         }
 
-
-        public string[] telefonFatura(string numara)
+        public Faturalar telefonFatura(string numara,CancellationToken tokenTel)
         {
             try
             {
-                Bilgiler.token.ThrowIfCancellationRequested();
                 Encoding encode = Encoding.ASCII;
                 string fields = "";
                 foreach (var key in List)
@@ -80,45 +79,56 @@ namespace crmPadok
                 {
                     string responseText = (new StreamReader(response.GetResponseStream(), Encoding.Default)).ReadToEnd();
                 }
-
-                string post = "kurumId=63&kurumKod=2&kurumAd=TURKTELEKOM&" +
-                   "kurumParaCinsiId=3&kurumParaCinsiText=Yeni+T%FCrk+Liras%FD&kurumJspAdi=ipc%2FIPCTurkTelekomTahsilatGiris.jsp&" +
-                   "kurumTahsilatTipi=TELEFON&kurumMesajTipi=500&kurumIslemTuru=TELEFON&kurumAciklama=TÜRK TELEKOM EV ÝÞ TELEFONU&kurumParaCinsiKod=TL&" +
-                   "kurumOnlineDurum=0&selectedKayitID=&hesapno=" + List["hesapno"] + "&hesapSahibi=+" + List["hesapSahibi"] + "&bakiye=" + List["bakiye"] + "&hesapTuru=" + List["hesapTuru"] +
-                   "&meslekkodu=" + List["meslekkodu"] + "&aciklama=" + List["aciklama"] + "&hesapdurumkodu=" + List["hesapdurumkodu"] + "&erisimTipi=1&erisimNo=" + numara + "&cmd=telefontahsilatfaturasorgula&h_PageValidation=ON";
-                byte[] postData = encode.GetBytes(post);
-                HttpWebRequest request2 = getRequest(postData);
-                string responseHtml = "";
-                using (HttpWebResponse response = (HttpWebResponse)request2.GetResponse())
+                if (list.Count > 15)
                 {
-                    responseHtml = (new StreamReader(response.GetResponseStream(), Encoding.Default).ReadToEnd());
-                }
-                HtmlDocument doc = new HtmlDocument();
-                doc.LoadHtml(responseHtml);
-                var node = doc.GetElementbyId("Table3");
-                string text2 = "";
-                var nodes = doc.DocumentNode.SelectNodes("//input");
-                if (nodes != null)
-                {
-                    foreach (var item in nodes)
+                    string post = "kurumId=63&kurumKod=2&kurumAd=TURKTELEKOM&" +
+                       "kurumParaCinsiId=3&kurumParaCinsiText=Yeni+T%FCrk+Liras%FD&kurumJspAdi=ipc%2FIPCTurkTelekomTahsilatGiris.jsp&" +
+                       "kurumTahsilatTipi=TELEFON&kurumMesajTipi=500&kurumIslemTuru=TELEFON&kurumAciklama=TÜRK TELEKOM EV ÝÞ TELEFONU&kurumParaCinsiKod=TL&" +
+                       "kurumOnlineDurum=0&selectedKayitID=&hesapno=" + List["hesapno"] + "&hesapSahibi=+" + List["hesapSahibi"] + "&bakiye=" + List["bakiye"] + "&hesapTuru=" + List["hesapTuru"] +
+                       "&meslekkodu=" + List["meslekkodu"] + "&aciklama=" + List["aciklama"] + "&hesapdurumkodu=" + List["hesapdurumkodu"] + "&erisimTipi=1&erisimNo=" + numara + "&cmd=telefontahsilatfaturasorgula&h_PageValidation=ON";
+                    byte[] postData = encode.GetBytes(post);
+                    HttpWebRequest request2 = getRequest(postData);
+                    string responseHtml = "";
+                    using (HttpWebResponse response = (HttpWebResponse)request2.GetResponse())
                     {
-                        if (item.OuterHtml.Contains("checkbox"))
+                        responseHtml = (new StreamReader(response.GetResponseStream(), Encoding.Default).ReadToEnd());
+                    }
+                  //  tokenTel.ThrowIfCancellationRequested();
+                    HtmlDocument doc = new HtmlDocument();
+                    doc.LoadHtml(responseHtml);
+                    var node = doc.GetElementbyId("Table3");
+                    string text2 = "";
+                    var nodes = doc.DocumentNode.SelectNodes("//input");
+                    if (nodes != null)
+                    {
+                        foreach (var item in nodes)
                         {
-                            text2 = item.OuterHtml.ToString();
+                            if (item.OuterHtml.Contains("checkbox"))
+                            {
+                                text2 = item.OuterHtml.ToString();
+                            }
                         }
                     }
+                    string[] sonuc = text2.Split('@');
+                    string isim = sonuc[10]; string faturaDonemi = sonuc[2]; string fiyat = sonuc[1];
+                    Faturalar telFatura = new Faturalar(numara, isim, faturaDonemi, fiyat);
+                    return telFatura;
                 }
-                string[] text = text2.Split('@');
-                return text;
+                else
+                    return null;
+            }
+            catch(OperationCanceledException)
+            {
+                throw new OperationCanceledException();
             }
             catch (Exception)
             {
 
-                return new string[] { };
+                throw new Exception("Beklenmedik bir hata ile karşılaşıldı");
             }
         }
 
-        public string[] adslFatura(string numara)
+        public Faturalar adslFatura(string numara,CancellationToken tokenAdsl)
         {
             try
             {
@@ -138,44 +148,56 @@ namespace crmPadok
                 {
                     string responseText = (new StreamReader(response.GetResponseStream(), Encoding.Default)).ReadToEnd();
                 }
-
-                string post = "kurumId=60&kurumKod=5&kurumAd=TURKTELEKOM&" +
-                    "kurumParaCinsiId=3&kurumParaCinsiText=Yeni+T%FCrk+Liras%FD&kurumJspAdi=ipc%2FIPCTurkTelekomTahsilatGiris.jsp&" +
-                    "kurumTahsilatTipi=TELEFON&kurumMesajTipi=510&kurumIslemTuru=TELEFON&kurumAciklama=T%DCRK+TELEKOM+%DDNTERNET+%28TTNET%29&kurumParaCinsiKod=TL&" +
-                    "kurumOnlineDurum=0&selectedKayitID=&hesapno=" + List["hesapno"] + "&hesapSahibi=+" + List["hesapSahibi"] + "&bakiye=" + List["bakiye"] + "&hesapTuru=" + List["hesapTuru"] +
-                    "&meslekkodu=" + List["meslekkodu"] + "&aciklama=" + List["aciklama"] + "&hesapdurumkodu=" + List["hesapdurumkodu"] + "&erisimTipi=1&erisimNo=" + numara + "&cmd=telefontahsilatfaturasorgula&h_PageValidation=ON";
-                byte[] postData = encode.GetBytes(post);
-
-                HttpWebRequest request2 = getRequest(postData);
-                string responseHtml = "";
-                //########################################//
-                using (HttpWebResponse response = (HttpWebResponse)request2.GetResponse())
+                if (list.Count > 15)
                 {
-                    responseHtml = (new StreamReader(response.GetResponseStream(), Encoding.Default).ReadToEnd());
-                }
-                //########################################//
-                HtmlDocument doc = new HtmlDocument();
-                doc.LoadHtml(responseHtml);
-                var node = doc.GetElementbyId("Table3");
-                string text2 = "";
-                var nodes = doc.DocumentNode.SelectNodes("//input");
-                if (nodes != null)
-                {
-                    foreach (var item in nodes)
+                    //server post data
+                    string post = "kurumId=60&kurumKod=5&kurumAd=TURKTELEKOM&" +
+                        "kurumParaCinsiId=3&kurumParaCinsiText=Yeni+T%FCrk+Liras%FD&kurumJspAdi=ipc%2FIPCTurkTelekomTahsilatGiris.jsp&" +
+                        "kurumTahsilatTipi=TELEFON&kurumMesajTipi=510&kurumIslemTuru=TELEFON&kurumAciklama=T%DCRK+TELEKOM+%DDNTERNET+%28TTNET%29&kurumParaCinsiKod=TL&" +
+                        "kurumOnlineDurum=0&selectedKayitID=&hesapno=" + List["hesapno"] + "&hesapSahibi=+" + List["hesapSahibi"] + "&bakiye=" + List["bakiye"] + "&hesapTuru=" + List["hesapTuru"] +
+                        "&meslekkodu=" + List["meslekkodu"] + "&aciklama=" + List["aciklama"] + "&hesapdurumkodu=" + List["hesapdurumkodu"] + "&erisimTipi=1&erisimNo=" + numara + "&cmd=telefontahsilatfaturasorgula&h_PageValidation=ON";
+                    byte[] postData = encode.GetBytes(post);
+
+                    HttpWebRequest request2 = getRequest(postData);
+                    string responseHtml = "";
+                    //########################################//
+                    using (HttpWebResponse response = (HttpWebResponse)request2.GetResponse())
                     {
-                        if (item.OuterHtml.Contains("checkbox"))
+                        responseHtml = (new StreamReader(response.GetResponseStream(), Encoding.Default).ReadToEnd());
+                    }
+                    tokenAdsl.ThrowIfCancellationRequested();
+                    //########################################//
+                    HtmlDocument doc = new HtmlDocument();
+                    doc.LoadHtml(responseHtml);
+                    var node = doc.GetElementbyId("Table3");
+                    string text2 = "";
+                    var nodes = doc.DocumentNode.SelectNodes("//input");
+                    if (nodes != null)
+                    {
+                        foreach (var item in nodes)
                         {
-                            text2 = item.OuterHtml.ToString();
+                            if (item.OuterHtml.Contains("checkbox"))
+                            {
+                                text2 = item.OuterHtml.ToString();
+                            }
                         }
                     }
+                    string[] sonuc = text2.Split('@');
+                    string isim = sonuc[10]; string faturaDonemi = sonuc[2]; string fiyat = sonuc[1];
+                    Faturalar fatura = new Faturalar(numara,isim,faturaDonemi,fiyat);
+                    return fatura;
                 }
-                string[] text = text2.Split('@');
-                return text;
+                else
+                    return null;
+            }
+            catch (OperationCanceledException)
+            {
+                throw new OperationCanceledException();
             }
             catch (Exception)
             {
 
-                return new string[] { };
+                throw new Exception("Beklenmedik bir hata ile karışlaşıldı");
             }
 
         }

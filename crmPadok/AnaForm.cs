@@ -3,10 +3,10 @@ using System.Windows.Forms;
 using System.Threading.Tasks;
 namespace crmPadok
 {
-    public partial class Form1 : Form
+    public partial class AnaForm : Form
     {
         Crm objCrm = new Crm();
-        public Form1()
+        public AnaForm()
         {
             InitializeComponent();
             
@@ -14,6 +14,7 @@ namespace crmPadok
         private async void btnLogin_Click(object sender, EventArgs e)
         {
             Task<bool> taskSonuc;
+             
             if (txtMusteriNo.Text.Length != 11 || txtSifre.Text.Length != 8)
             {
                 MessageBox.Show("Müsteri no 11,şifre 8 karakter uzunluğunda olmalıdır.", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -49,9 +50,15 @@ namespace crmPadok
         }
         private async void btnSms_Click(object sender, EventArgs e)
         {
+            int smsSifreKontrol = 0;
+            if(!int.TryParse(txtSms.Text,out smsSifreKontrol))
+            {
+                MessageBox.Show("Sms şifresi sadece rakamlardan oluşabilir", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
             if (txtSms.Text == "" || txtSms.Text.Length!=6)
             {
-                MessageBox.Show("Hatalı giriş yaptınız", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Sms şifre uzunluğu 6 karakter olmalıdır", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             Task<bool> taskSonuc = Task.Factory.StartNew(() => objCrm.SmsApproval(txtSms.Text));
@@ -81,6 +88,7 @@ namespace crmPadok
                 }
                 catch (Exception ex)
                 {
+                    btnSms.Enabled = true;
                     MessageBox.Show("Bilgiler gönderilirken hata oluştu " + ex.Message);
                 }
             }
@@ -128,6 +136,12 @@ namespace crmPadok
         private void Form1_Load(object sender, EventArgs e)
         {
             txtMusteriNo.Focus();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Bilgiler bilg = new Bilgiler(objCrm);
+            bilg.Show();
         }
     }
 }

@@ -18,7 +18,10 @@ namespace crmPadok
         private bool oturumKontrol()
         {
             string path = Application.StartupPath;
-            string[] cookieFile = File.ReadAllText(path + "\\cookiefile.txt").Split(' ');
+            path += "\\cookiefile.txt";
+            if (!File.Exists(path))
+                return false;
+            string[] cookieFile = File.ReadAllText(path).Split(' ');
             if (cookieFile.Length <= 5)
                 return false;
             Cookie cook = new Cookie(cookieFile[0], cookieFile[1], cookieFile[2], cookieFile[3]);

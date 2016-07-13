@@ -46,14 +46,48 @@ namespace crmPadok
 
         CancellationToken tokenAdsl;
 
+        System.Data.DataTable dtTel = new System.Data.DataTable();
+        System.Data.DataTable dtAdsl = new System.Data.DataTable();
+
         public Bilgiler(Crm objCrm)
         {
             InitializeComponent();
             this.objCrm = objCrm;
+            dataGridTelFatura();
+           
+            objCrm.cookieKaydet();
+        }
+        private void dataGridTelFatura()
+        {
+            dtTel.Columns.Add("Telefon Numarası");
+            dtTel.Columns.Add("İsim");
+            dtTel.Columns.Add("Fatura Dönemi");
+            dtTel.Columns.Add("Borç");
+
+            dataGridTel.DataSource = dtTel;
+            dataGridTel.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCellsExceptHeader);
+            dataGridTel.Columns[0].Width = 120;
+            dataGridTel.Columns[1].Width = 300;
+            dataGridTel.Columns[2].Width = 120;
+            dataGridTel.Columns[3].Width = 120;
+        }
+        private void dataGridAdslFatura()
+        {
+            dtAdsl.Columns.Add("Adsl No");
+            dtAdsl.Columns.Add("İsim");
+            dtAdsl.Columns.Add("Fatura Dönemi");
+            dtAdsl.Columns.Add("Borç");
+
+            dataGridAdsl.DataSource = dtAdsl;
+            dataGridAdsl.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCellsExceptHeader);
+            dataGridAdsl.Columns[0].Width = 120;
+            dataGridAdsl.Columns[1].Width = 300;
+            dataGridAdsl.Columns[2].Width = 120;
+            dataGridAdsl.Columns[3].Width = 120;
         }
         private async Task<List<Faturalar>> getTelFatura()
         {
-           
+
             object state = new object();
 
             telFaturaListe = new List<Faturalar>();
@@ -100,13 +134,18 @@ namespace crmPadok
                               {
                                   Task.Factory.StartNew(() => printToScreen(telFatura.ToString() + "\n"), tokenTel, TaskCreationOptions.AttachedToParent, TaskScheduler.FromCurrentSynchronizationContext());
                                   telFaturaListe.Add(telFatura);
+                               
+                                  dtTel.Rows.Add(new[] { telFatura.AboneNo, telFatura.Isim, telFatura.FaturaDonemi, telFatura.Fiyat });
                               }
                               else if (t.IsCanceled)
                                   Task.Factory.StartNew(() => printToScreen("Cancelled"));
                               else
                               {
                                   Task.Factory.StartNew(() => printToScreen(telNo + "=> --------------\n"), tokenTel, TaskCreationOptions.AttachedToParent, TaskScheduler.FromCurrentSynchronizationContext());
-                                  telFaturaListe.Add(new Faturalar(telNo, "", "", ""));
+                                  Faturalar bosTelFatura = new Faturalar(telNo, "---", "---", "---");
+                                  telFaturaListe.Add(bosTelFatura);
+                             
+                                  dtTel.Rows.Add(new[] { bosTelFatura.AboneNo, bosTelFatura.Isim, bosTelFatura.FaturaDonemi, bosTelFatura.Fiyat });
                               }
                           }
                       }
@@ -177,13 +216,21 @@ namespace crmPadok
                             {
                                 Task.Factory.StartNew(() => printToScreenAdsl(adslFatura.ToString() + "\n"), tokenAdsl, TaskCreationOptions.AttachedToParent, TaskScheduler.FromCurrentSynchronizationContext());
                                 adslFaturaListe.Add(adslFatura);
+
+                                dtAdsl.Rows.Add(new[] { adslFatura.AboneNo, adslFatura.Isim, adslFatura.FaturaDonemi, adslFatura.Fiyat });
                             }
                             else if (t.IsCanceled)
                                 Task.Factory.StartNew(() => printToScreenAdsl("Cancelled"));
                             else
                             {
-                                Task.Factory.StartNew(() => printToScreenAdsl(adslNo + "=> --------------\n"), tokenAdsl, TaskCreationOptions.AttachedToParent, TaskScheduler.FromCurrentSynchronizationContext());
-                                adslFaturaListe.Add(new Faturalar(adslNo, "", "", ""));
+                                Faturalar bosAdslFatura = new Faturalar(adslNo, "---", "---", "---");
+                                //textbox'a ekler
+                                Task.Factory.StartNew(() => printToScreenAdsl(bosAdslFatura.ToString()), tokenAdsl, TaskCreationOptions.AttachedToParent, TaskScheduler.FromCurrentSynchronizationContext());
+                                //listeye ekler
+                                telFaturaListe.Add(bosAdslFatura);
+                                //data table a ekler
+                                dtAdsl.Rows.Add(new[] { bosAdslFatura.AboneNo, bosAdslFatura.Isim, bosAdslFatura.FaturaDonemi, bosAdslFatura.Fiyat });
+
                             }
                         }
                     }
@@ -201,12 +248,14 @@ namespace crmPadok
                 MessageBox.Show("Sorgulama tamamlandı", "Padok", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 adslStatus = AdslTaskStatus.Completed;
             }
+            //iptal edilmiş sorgu
             else if (tokenAdsl.IsCancellationRequested)
             {
                 adslStatus = AdslTaskStatus.Cancelled;
                 MessageBox.Show("İptal edildi.", "Padok", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 prgAdsl.Value = 0;
             }
+            //ne bitti nede iptal edildi
             else
             {
                 adslStatus = AdslTaskStatus.Waiting;
@@ -221,8 +270,10 @@ namespace crmPadok
         {
             txtAdslSonuc.Text += text;
         }
+        //sorgulama yapmadan önce oturum sonlandırılmış mı onu kontrol eder
         private bool oturumKontrol()
         {
+            //oturumun açık olması gereken link adresi oturum kapalıysa uyarı sayfasına yönlendirir açıksa bazı bilgiler yer alır
             HttpWebRequest req = (HttpWebRequest)WebRequest.Create("https://ipc2.ptt.gov.tr/pttwebapproot/ipcservlet?cmd=kurumtahsilatgiristelefon");
             req.CookieContainer = objCrm.Container;
             req.UserAgent = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.121 Safari/535.2";
@@ -274,25 +325,13 @@ namespace crmPadok
                 return;
             }
             List<Faturalar> telList = await getAdslFatura();
-
-            //if (txtAdsl.Text.Length != 10)
-            //{
-            //    MessageBox.Show("Hatalı giriş yaptınız", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //    return;
-            //}
-            //string[] sonuc = objCrm.adslFatura(txtAdsl.Text); 
-            //if (sonuc.Length >= 10)
-            //    MessageBox.Show("İsim: " + sonuc[10] + " Borç Dönemi: " + sonuc[2] + " Borç: " + sonuc[1]);
-            //else
-            //    MessageBox.Show("Kayıt bulunamadı");
         }
-      
         private void Bilgiler_FormClosing(object sender, FormClosingEventArgs e)
         {
             Form f = Application.OpenForms["AnaForm"];
             ((AnaForm)f).Show();
+            objCrm.cookieKaydet();
         }
-
         private void btnIptal_Click(object sender, EventArgs e)
         {
             if (tokenTel.CanBeCanceled && !tokenTel.IsCancellationRequested && progressBar1.Value != 0 && progressBar1.Value != 100)
@@ -383,10 +422,6 @@ namespace crmPadok
             // two calls to AutoFit.
             workSheet.Range["A1", "D"+(faturalar.Count+1)].AutoFormat(
                 Excel.XlRangeAutoFormat.xlRangeAutoFormatClassic1);
-
-            // Put the spreadsheet contents on the clipboard. The Copy method has one
-            // optional parameter for specifying a destination. Because no argument  
-            // is sent, the destination is the Clipboard.
             //workSheet.Range["A1:B3"].Copy();
         }
 
@@ -407,6 +442,35 @@ namespace crmPadok
 
             List<Faturalar> SortedList = adslFaturaListe.OrderBy(o => o.AboneNo).ToList();
             DisplayInExcel(SortedList);
+        }
+       
+
+        private void btnTemizle_Click(object sender, EventArgs e)
+        {
+            if(telStatus==TelTaskStatus.Running)
+            {
+                MessageBox.Show("Soruglama işlemi devam ederken tablo temizlenemez!","Hata",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                return;
+            }
+            System.Data.DataTable _dtTel = new System.Data.DataTable();
+            dtTel = _dtTel;
+            dataGridTel.DataSource = dtTel;
+            dataGridTelFatura();
+            dataGridTel.Refresh();
+        }
+
+        private void btnAdslDataTemizle_Click(object sender, EventArgs e)
+        {
+            if (adslStatus == AdslTaskStatus.Running)
+            {
+                MessageBox.Show("Soruglama işlemi devam ederken tablo temizlenemez!", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            System.Data.DataTable _dtAdsl = new System.Data.DataTable();
+            dtAdsl = _dtAdsl;
+            dataGridAdsl.DataSource = dtAdsl;
+            dataGridAdslFatura();
+            dataGridAdsl.Refresh();
         }
     }
 }

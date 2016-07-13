@@ -34,20 +34,26 @@
             this.btnTelefon = new System.Windows.Forms.Button();
             this.tabAdslTelefon = new System.Windows.Forms.TabControl();
             this.tabTelefon = new System.Windows.Forms.TabPage();
+            this.dataGridTel = new System.Windows.Forms.DataGridView();
+            this.btnTemizle = new System.Windows.Forms.Button();
             this.btnExcel = new System.Windows.Forms.Button();
             this.btnIptal = new System.Windows.Forms.Button();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.txtSonuclar = new System.Windows.Forms.RichTextBox();
             this.txtTelefon = new System.Windows.Forms.RichTextBox();
             this.tabAdsl = new System.Windows.Forms.TabPage();
+            this.dataGridAdsl = new System.Windows.Forms.DataGridView();
+            this.btnAdslExcel = new System.Windows.Forms.Button();
             this.btnAdslIptal = new System.Windows.Forms.Button();
             this.prgAdsl = new System.Windows.Forms.ProgressBar();
             this.txtAdslSonuc = new System.Windows.Forms.RichTextBox();
             this.txtAdsl = new System.Windows.Forms.RichTextBox();
-            this.btnAdslExcel = new System.Windows.Forms.Button();
+            this.btnAdslDataTemizle = new System.Windows.Forms.Button();
             this.tabAdslTelefon.SuspendLayout();
             this.tabTelefon.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridTel)).BeginInit();
             this.tabAdsl.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridAdsl)).BeginInit();
             this.SuspendLayout();
             // 
             // btnAdslSorgula
@@ -56,7 +62,7 @@
             this.btnAdslSorgula.FlatAppearance.BorderSize = 0;
             this.btnAdslSorgula.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnAdslSorgula.Font = new System.Drawing.Font("Georgia", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.btnAdslSorgula.Location = new System.Drawing.Point(322, 580);
+            this.btnAdslSorgula.Location = new System.Drawing.Point(322, 575);
             this.btnAdslSorgula.Name = "btnAdslSorgula";
             this.btnAdslSorgula.Size = new System.Drawing.Size(75, 35);
             this.btnAdslSorgula.TabIndex = 17;
@@ -110,6 +116,8 @@
             // 
             // tabTelefon
             // 
+            this.tabTelefon.Controls.Add(this.dataGridTel);
+            this.tabTelefon.Controls.Add(this.btnTemizle);
             this.tabTelefon.Controls.Add(this.btnExcel);
             this.tabTelefon.Controls.Add(this.btnIptal);
             this.tabTelefon.Controls.Add(this.progressBar1);
@@ -124,6 +132,31 @@
             this.tabTelefon.TabIndex = 0;
             this.tabTelefon.Text = "Telefon Sorgula";
             this.tabTelefon.UseVisualStyleBackColor = true;
+            // 
+            // dataGridTel
+            // 
+            this.dataGridTel.AllowUserToAddRows = false;
+            this.dataGridTel.AllowUserToDeleteRows = false;
+            this.dataGridTel.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridTel.Location = new System.Drawing.Point(496, 20);
+            this.dataGridTel.Name = "dataGridTel";
+            this.dataGridTel.ReadOnly = true;
+            this.dataGridTel.Size = new System.Drawing.Size(656, 525);
+            this.dataGridTel.TabIndex = 30;
+            // 
+            // btnTemizle
+            // 
+            this.btnTemizle.BackColor = System.Drawing.Color.MediumAquamarine;
+            this.btnTemizle.FlatAppearance.BorderSize = 0;
+            this.btnTemizle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnTemizle.Font = new System.Drawing.Font("Georgia", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.btnTemizle.Location = new System.Drawing.Point(915, 576);
+            this.btnTemizle.Name = "btnTemizle";
+            this.btnTemizle.Size = new System.Drawing.Size(75, 33);
+            this.btnTemizle.TabIndex = 29;
+            this.btnTemizle.Text = "Temizle";
+            this.btnTemizle.UseVisualStyleBackColor = false;
+            this.btnTemizle.Click += new System.EventHandler(this.btnTemizle_Click);
             // 
             // btnExcel
             // 
@@ -176,6 +209,8 @@
             // 
             // tabAdsl
             // 
+            this.tabAdsl.Controls.Add(this.btnAdslDataTemizle);
+            this.tabAdsl.Controls.Add(this.dataGridAdsl);
             this.tabAdsl.Controls.Add(this.btnAdslExcel);
             this.tabAdsl.Controls.Add(this.btnAdslIptal);
             this.tabAdsl.Controls.Add(this.prgAdsl);
@@ -191,9 +226,34 @@
             this.tabAdsl.Text = "Adsl Sorgula";
             this.tabAdsl.UseVisualStyleBackColor = true;
             // 
+            // dataGridAdsl
+            // 
+            this.dataGridAdsl.AllowUserToAddRows = false;
+            this.dataGridAdsl.AllowUserToDeleteRows = false;
+            this.dataGridAdsl.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridAdsl.Location = new System.Drawing.Point(500, 20);
+            this.dataGridAdsl.Name = "dataGridAdsl";
+            this.dataGridAdsl.ReadOnly = true;
+            this.dataGridAdsl.Size = new System.Drawing.Size(656, 525);
+            this.dataGridAdsl.TabIndex = 31;
+            // 
+            // btnAdslExcel
+            // 
+            this.btnAdslExcel.BackColor = System.Drawing.Color.MediumAquamarine;
+            this.btnAdslExcel.FlatAppearance.BorderSize = 0;
+            this.btnAdslExcel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAdslExcel.Font = new System.Drawing.Font("Georgia", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.btnAdslExcel.Location = new System.Drawing.Point(1000, 577);
+            this.btnAdslExcel.Name = "btnAdslExcel";
+            this.btnAdslExcel.Size = new System.Drawing.Size(75, 33);
+            this.btnAdslExcel.TabIndex = 28;
+            this.btnAdslExcel.Text = "Excel";
+            this.btnAdslExcel.UseVisualStyleBackColor = false;
+            this.btnAdslExcel.Click += new System.EventHandler(this.btnAdslExcel_Click);
+            // 
             // btnAdslIptal
             // 
-            this.btnAdslIptal.Location = new System.Drawing.Point(1081, 580);
+            this.btnAdslIptal.Location = new System.Drawing.Point(1081, 577);
             this.btnAdslIptal.Name = "btnAdslIptal";
             this.btnAdslIptal.Size = new System.Drawing.Size(75, 33);
             this.btnAdslIptal.TabIndex = 27;
@@ -203,7 +263,7 @@
             // 
             // prgAdsl
             // 
-            this.prgAdsl.Location = new System.Drawing.Point(500, 551);
+            this.prgAdsl.Location = new System.Drawing.Point(500, 548);
             this.prgAdsl.Name = "prgAdsl";
             this.prgAdsl.Size = new System.Drawing.Size(656, 23);
             this.prgAdsl.TabIndex = 26;
@@ -226,19 +286,19 @@
             this.txtAdsl.TabIndex = 23;
             this.txtAdsl.Text = "";
             // 
-            // btnAdslExcel
+            // btnAdslDataTemizle
             // 
-            this.btnAdslExcel.BackColor = System.Drawing.Color.MediumAquamarine;
-            this.btnAdslExcel.FlatAppearance.BorderSize = 0;
-            this.btnAdslExcel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnAdslExcel.Font = new System.Drawing.Font("Georgia", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.btnAdslExcel.Location = new System.Drawing.Point(1000, 580);
-            this.btnAdslExcel.Name = "btnAdslExcel";
-            this.btnAdslExcel.Size = new System.Drawing.Size(75, 33);
-            this.btnAdslExcel.TabIndex = 28;
-            this.btnAdslExcel.Text = "Excel";
-            this.btnAdslExcel.UseVisualStyleBackColor = false;
-            this.btnAdslExcel.Click += new System.EventHandler(this.btnAdslExcel_Click);
+            this.btnAdslDataTemizle.BackColor = System.Drawing.Color.MediumAquamarine;
+            this.btnAdslDataTemizle.FlatAppearance.BorderSize = 0;
+            this.btnAdslDataTemizle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAdslDataTemizle.Font = new System.Drawing.Font("Georgia", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.btnAdslDataTemizle.Location = new System.Drawing.Point(919, 576);
+            this.btnAdslDataTemizle.Name = "btnAdslDataTemizle";
+            this.btnAdslDataTemizle.Size = new System.Drawing.Size(75, 33);
+            this.btnAdslDataTemizle.TabIndex = 32;
+            this.btnAdslDataTemizle.Text = "Temizle";
+            this.btnAdslDataTemizle.UseVisualStyleBackColor = false;
+            this.btnAdslDataTemizle.Click += new System.EventHandler(this.btnAdslDataTemizle_Click);
             // 
             // Bilgiler
             // 
@@ -256,8 +316,10 @@
             this.tabAdslTelefon.ResumeLayout(false);
             this.tabTelefon.ResumeLayout(false);
             this.tabTelefon.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridTel)).EndInit();
             this.tabAdsl.ResumeLayout(false);
             this.tabAdsl.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridAdsl)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -280,5 +342,9 @@
         private System.Windows.Forms.RichTextBox txtAdslSonuc;
         private System.Windows.Forms.Button btnExcel;
         private System.Windows.Forms.Button btnAdslExcel;
+        private System.Windows.Forms.Button btnTemizle;
+        private System.Windows.Forms.DataGridView dataGridTel;
+        private System.Windows.Forms.DataGridView dataGridAdsl;
+        private System.Windows.Forms.Button btnAdslDataTemizle;
     }
 }

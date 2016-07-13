@@ -303,7 +303,22 @@ namespace crmPadok
                
             }
         }
+        public void cookieKaydet()
+        {
+            Dictionary<string, string> keyList = this.getHesapNo();
+            CookieCollection cookies = this.Container.GetCookies(new Uri("https://ipc2.ptt.gov.tr/pttwebapproot/ipcservlet"));
 
+            //programın klasörü
+            string path = System.Windows.Forms.Application.StartupPath;
+            path += "\\cookiefile.txt";
+
+            string cookieValues = "";
+            //yeni cookie yi dosyaya yaz
+            foreach (Cookie cookie in cookies)
+                cookieValues += cookie.Name + " " + cookie.Value + " " + cookie.Path + " " + cookie.Domain + " ";
+
+            File.WriteAllText(path, cookieValues);
+        }
         //public string[] adslFatura(string numara)
         //{
         //    try

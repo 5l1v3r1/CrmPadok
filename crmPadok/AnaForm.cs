@@ -116,19 +116,7 @@ namespace crmPadok
                 try
                 {
                     //cookieler gelmeden önce bu çalıştırılmak zorunda yok girmiyor
-                    Dictionary<string, string> keyList = objCrm.getHesapNo();
-                    CookieCollection cookies = objCrm.Container.GetCookies(new Uri("https://ipc2.ptt.gov.tr/pttwebapproot/ipcservlet"));
-
-                    //programın klasörü
-                    string path = Application.StartupPath;
-                    path += "\\cookiefile.txt";
-
-                    string cookieValues = "";
-                    //yeni cookie yi dosyaya yaz
-                    foreach (Cookie cookie in cookies)
-                       cookieValues+= cookie.Name + " " + cookie.Value + " " + cookie.Path + " " + cookie.Domain + " ";
-
-                    File.WriteAllText(path, cookieValues);
+                    objCrm.cookieKaydet();
 
                     tmr.Stop();
                     #region gizle göster

@@ -17,10 +17,10 @@ namespace crmPadok
         }
         private bool oturumKontrol()
         {
-            string path = Application.StartupPath;
-            path += "\\cookiefile.txt";
+            string path = Path.GetTempPath()+ "\\cookiefile.txt";
             if (!File.Exists(path))
                 return false;
+
             string[] cookieFile = File.ReadAllText(path).Split(' ');
             if (cookieFile.Length <= 5)
                 return false;
@@ -196,8 +196,9 @@ namespace crmPadok
         }
         private void button1_Click(object sender, EventArgs e)
         {
-            Bilgiler bilg = new Bilgiler(objCrm);
-            bilg.Show();
+            //Bilgiler bilg = new Bilgiler(objCrm);
+            //bilg.Show();
+            objCrm.cookieKaydet();
         }
     }
 }

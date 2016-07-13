@@ -54,7 +54,7 @@ namespace crmPadok
             InitializeComponent();
             this.objCrm = objCrm;
             dataGridTelFatura();
-           
+            dataGridAdslFatura();
             objCrm.cookieKaydet();
         }
         private void dataGridTelFatura()

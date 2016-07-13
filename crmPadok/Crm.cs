@@ -305,19 +305,30 @@ namespace crmPadok
         }
         public void cookieKaydet()
         {
-            Dictionary<string, string> keyList = this.getHesapNo();
-            CookieCollection cookies = this.Container.GetCookies(new Uri("https://ipc2.ptt.gov.tr/pttwebapproot/ipcservlet"));
+            try
+            {
+                Dictionary<string, string> keyList = this.getHesapNo();
+                CookieCollection cookies = this.Container.GetCookies(new Uri("https://ipc2.ptt.gov.tr/pttwebapproot/ipcservlet"));
 
-            //programın klasörü
-            string path = System.Windows.Forms.Application.StartupPath;
-            path += "\\cookiefile.txt";
-
-            string cookieValues = "";
-            //yeni cookie yi dosyaya yaz
-            foreach (Cookie cookie in cookies)
-                cookieValues += cookie.Name + " " + cookie.Value + " " + cookie.Path + " " + cookie.Domain + " ";
-
-            File.WriteAllText(path, cookieValues);
+                //programın klasörü
+                string cookieValues = "";
+                //yeni cookie yi dosyaya yaz
+                foreach (Cookie cookie in cookies)
+                    cookieValues += cookie.Name + " " + cookie.Value + " " + cookie.Path + " " + cookie.Domain + " ";
+                //önce temp file ı siliyoruz
+                File.Delete(Path.GetTempPath() + "\\cookiefile.txt");
+                //tekrar oluşturuyoruz
+                string myTempFile = Path.Combine(Path.GetTempPath(), "cookiefile.txt");
+                using (StreamWriter sw = new StreamWriter(myTempFile))
+                {
+                    sw.Write(cookieValues);
+                }
+            }
+            catch
+            {
+                //yapacak birşey yok
+                return;
+            }
         }
         //public string[] adslFatura(string numara)
         //{

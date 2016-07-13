@@ -61,7 +61,7 @@ namespace crmPadok
             str.Write(data, 0, data.Length);
             str.Close();
             return request;
-        }
+        }       
 
         public Faturalar telefonFatura(string numara,CancellationToken tokenTel)
         {
@@ -93,38 +93,21 @@ namespace crmPadok
                     {
                         responseHtml = (new StreamReader(response.GetResponseStream(), Encoding.Default).ReadToEnd());
                     }
-                  //  tokenTel.ThrowIfCancellationRequested();
-                    HtmlDocument doc = new HtmlDocument();
-                    doc.LoadHtml(responseHtml);
-                    var node = doc.GetElementbyId("Table3");
-                    string text2 = "";
-                    var nodes = doc.DocumentNode.SelectNodes("//input");
-                    if (nodes != null)
-                    {
-                        foreach (var item in nodes)
-                        {
-                            if (item.OuterHtml.Contains("checkbox"))
-                            {
-                                text2 = item.OuterHtml.ToString();
-                            }
-                        }
-                    }
-                    string[] sonuc = text2.Split('@');
-                    string isim = sonuc[10]; string faturaDonemi = sonuc[2]; string fiyat = sonuc[1];
-                    Faturalar telFatura = new Faturalar(numara, isim, faturaDonemi, fiyat);
-                    return telFatura;
+                    tokenTel.ThrowIfCancellationRequested();
+                
+                    return getFatura(numara,responseHtml);
                 }
                 else
                     return null;
             }
             catch(OperationCanceledException)
             {
-                throw new OperationCanceledException();
+                return null;
             }
             catch (Exception)
             {
 
-                throw new Exception("Beklenmedik bir hata ile karşılaşıldı");
+                return null;
             }
         }
 
@@ -167,40 +150,44 @@ namespace crmPadok
                     }
                     tokenAdsl.ThrowIfCancellationRequested();
                     //########################################//
-                    HtmlDocument doc = new HtmlDocument();
-                    doc.LoadHtml(responseHtml);
-                    var node = doc.GetElementbyId("Table3");
-                    string text2 = "";
-                    var nodes = doc.DocumentNode.SelectNodes("//input");
-                    if (nodes != null)
-                    {
-                        foreach (var item in nodes)
-                        {
-                            if (item.OuterHtml.Contains("checkbox"))
-                            {
-                                text2 = item.OuterHtml.ToString();
-                            }
-                        }
-                    }
-                    string[] sonuc = text2.Split('@');
-                    string isim = sonuc[10]; string faturaDonemi = sonuc[2]; string fiyat = sonuc[1];
-                    Faturalar fatura = new Faturalar(numara,isim,faturaDonemi,fiyat);
-                    return fatura;
+                    return getFatura(numara, responseHtml);
                 }
                 else
                     return null;
             }
             catch (OperationCanceledException)
             {
-                throw new OperationCanceledException();
+                return null;
             }
             catch (Exception)
             {
 
-                throw new Exception("Beklenmedik bir hata ile karışlaşıldı");
+                return null;
             }
 
         }
-
+        private Faturalar getFatura(string numara,string htmlDoc)
+        {
+            HtmlDocument doc = new HtmlDocument();
+            doc.LoadHtml(htmlDoc);
+            var node = doc.GetElementbyId("Table3");
+            string sonucText = "";
+            var nodes = doc.DocumentNode.SelectNodes("//input");
+            
+            if (nodes != null)
+            {
+                foreach (var item in nodes)
+                {
+                    if (item.OuterHtml.Contains("checkbox"))
+                    {
+                        sonucText = item.OuterHtml.ToString();
+                    }
+                }
+            }
+            string[] sonuc = sonucText.Split('@');
+            string isim = sonuc[10]; string faturaDonemi = sonuc[2]; string fiyat = sonuc[1];
+            Faturalar fatura = new Faturalar(numara, isim, faturaDonemi, fiyat);
+            return fatura;
+        }
     }
 }

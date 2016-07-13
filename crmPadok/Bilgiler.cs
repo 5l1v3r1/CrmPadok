@@ -3,6 +3,11 @@ using System.Windows.Forms;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Threading;
+using Excel = Microsoft.Office.Interop.Excel;
+using System.Net;
+using System.IO;
+using System.Text;
+using System.Linq;
 
 namespace crmPadok
 {
@@ -27,15 +32,19 @@ namespace crmPadok
 
         public AdslTaskStatus adslStatus=AdslTaskStatus.Waiting;
 
+        List<Faturalar> telFaturaListe;
+
+        List<Faturalar> adslFaturaListe;
+
         Crm objCrm;
 
-        public CancellationTokenSource sourceTel;
+        CancellationTokenSource sourceTel;
 
-        public CancellationToken tokenTel;
+        CancellationToken tokenTel;
 
-        public CancellationTokenSource sourceAdsl;
+        CancellationTokenSource sourceAdsl;
 
-        public CancellationToken tokenAdsl;
+        CancellationToken tokenAdsl;
 
         public Bilgiler(Crm objCrm)
         {
@@ -44,10 +53,10 @@ namespace crmPadok
         }
         private async Task<List<Faturalar>> getTelFatura()
         {
+           
             object state = new object();
 
-          
-            List<Faturalar> liste = new List<Faturalar>();
+            telFaturaListe = new List<Faturalar>();
             List<Task> taskList = new List<Task>();
             sourceTel = new CancellationTokenSource();
             tokenTel = new CancellationToken();
@@ -59,12 +68,18 @@ namespace crmPadok
 
             float progress = (float)100 / (float)numaralar.Length;
             Dictionary<string, string> keyList = objCrm.getHesapNo();
+            if(keyList.Count<15)
+            {
+                MessageBox.Show("Oturumunuz kapatılmıştır lütfen oturum açınız");
+                return null;
+            }
             int i = 0;
             foreach (var numara in numaralar)
             {
                 if (numara == "")
                     continue;
                 Sorgula objSorgula = new Sorgula();
+                //objSorgula.Container = objCrm.Container;
                 objSorgula.Container = objCrm.Container;
                 objSorgula.List = keyList;
                 var sonTask = Task.Run(() => objSorgula.telefonFatura(numara,tokenTel), tokenTel).ContinueWith(async (t) =>
@@ -72,34 +87,38 @@ namespace crmPadok
                       string telNo = numara;
                       await t;
                       i++;
-                      progressBar1.Value = Convert.ToInt32(progress * i);
+                      progressBar1.Value =Convert.ToInt32(Math.Ceiling(Convert.ToDouble(progress * i)));
                       if (t.IsFaulted)
                           txtSonuclar.Text += telNo + "=>faulted " + t.Exception.Message;
                       else
                       {
-                          lock(state)
-                          {
-                              Faturalar telFatura = t.Result;
+                        lock (state)
+                        {
+
+                            Faturalar telFatura = t.Result;
                               if (telFatura != null)
                               {
                                   Task.Factory.StartNew(() => printToScreen(telFatura.ToString() + "\n"), tokenTel, TaskCreationOptions.AttachedToParent, TaskScheduler.FromCurrentSynchronizationContext());
-                                  liste.Add(telFatura);
+                                  telFaturaListe.Add(telFatura);
                               }
-                              else if (t.IsCompleted)
-                                   Task.Factory.StartNew(() => printToScreen(telNo+" => --------------\n"), tokenTel, TaskCreationOptions.AttachedToParent, TaskScheduler.FromCurrentSynchronizationContext());
                               else if (t.IsCanceled)
-                                   Task.Factory.StartNew(() => printToScreen("Cancelled"));
+                                  Task.Factory.StartNew(() => printToScreen("Cancelled"));
+                              else
+                              {
+                                  Task.Factory.StartNew(() => printToScreen(telNo + "=> --------------\n"), tokenTel, TaskCreationOptions.AttachedToParent, TaskScheduler.FromCurrentSynchronizationContext());
+                                  telFaturaListe.Add(new Faturalar(telNo, "", "", ""));
+                              }
                           }
                       }
                   },
                  TaskScheduler.FromCurrentSynchronizationContext());
-                
-                
+
                 taskList.Add(sonTask);
 
                 if (taskList.Count % 100 == 0)
                     await Task.WhenAll(taskList);
             }
+            await Task.WhenAll(taskList);
             if (progressBar1.Value == 100)
             {
                 MessageBox.Show("Sorgulama tamamlandı", "Padok", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -115,13 +134,13 @@ namespace crmPadok
             {
                 telStatus = TelTaskStatus.Waiting;
             }
-            return liste;
+            return telFaturaListe;
         }
         private async Task<List<Faturalar>> getAdslFatura()
         {
             object state = new object();
             adslStatus = AdslTaskStatus.Running;
-            List<Faturalar> liste = new List<Faturalar>();
+            adslFaturaListe = new List<Faturalar>();
             List<Task> taskList = new List<Task>();
             sourceAdsl = new CancellationTokenSource();
             tokenAdsl = new CancellationToken();
@@ -134,8 +153,10 @@ namespace crmPadok
             {
                 if (numara == "")
                     continue;
+                //Her sorgulama için ayrı obje
                 Sorgula objSorgula = new Sorgula();
-                objSorgula.Container = objCrm.Container;
+                //daha önceki cookieler yeni objeye aktarılıyor
+                objSorgula.Container = objCrm.Container ;
                 objSorgula.List = keyList;
                 var sonTask = Task.Run(() => objSorgula.adslFatura(numara,tokenAdsl), tokenAdsl).ContinueWith(async (t) =>
                 {
@@ -154,11 +175,16 @@ namespace crmPadok
                             Faturalar adslFatura = t.Result;
                             if (adslFatura != null)
                             {
-                                Task.Factory.StartNew(() => printToScreenAdsl(adslFatura.ToString() + "\n"), tokenTel, TaskCreationOptions.AttachedToParent, TaskScheduler.FromCurrentSynchronizationContext());
-                                liste.Add(adslFatura);
+                                Task.Factory.StartNew(() => printToScreenAdsl(adslFatura.ToString() + "\n"), tokenAdsl, TaskCreationOptions.AttachedToParent, TaskScheduler.FromCurrentSynchronizationContext());
+                                adslFaturaListe.Add(adslFatura);
                             }
+                            else if (t.IsCanceled)
+                                Task.Factory.StartNew(() => printToScreenAdsl("Cancelled"));
                             else
-                                Task.Factory.StartNew(() => printToScreenAdsl("--------------\n"), tokenTel, TaskCreationOptions.AttachedToParent, TaskScheduler.FromCurrentSynchronizationContext());
+                            {
+                                Task.Factory.StartNew(() => printToScreenAdsl(adslNo + "=> --------------\n"), tokenAdsl, TaskCreationOptions.AttachedToParent, TaskScheduler.FromCurrentSynchronizationContext());
+                                adslFaturaListe.Add(new Faturalar(adslNo, "", "", ""));
+                            }
                         }
                     }
                 },
@@ -169,6 +195,7 @@ namespace crmPadok
                     await Task.WhenAll(taskList);
             }
             //sorgulama bitti yada iptal edildi
+            await Task.WhenAll(taskList);
             if (prgAdsl.Value == 100)
             {
                 MessageBox.Show("Sorgulama tamamlandı", "Padok", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -184,20 +211,42 @@ namespace crmPadok
             {
                 adslStatus = AdslTaskStatus.Waiting;
             }
-            return liste;
+            return adslFaturaListe;
         }
         private void printToScreen(string text)
         {
-            if(tokenTel.IsCancellationRequested)
-               tokenTel.ThrowIfCancellationRequested();
             txtSonuclar.Text += text;
         }
         private void printToScreenAdsl(string text)
         {
             txtAdslSonuc.Text += text;
         }
+        private bool oturumKontrol()
+        {
+            HttpWebRequest req = (HttpWebRequest)WebRequest.Create("https://ipc2.ptt.gov.tr/pttwebapproot/ipcservlet?cmd=kurumtahsilatgiristelefon");
+            req.CookieContainer = objCrm.Container;
+            req.UserAgent = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.121 Safari/535.2";
+            string text = "";
+            using (HttpWebResponse resp = (HttpWebResponse)req.GetResponse())
+            {
+                text = new StreamReader(resp.GetResponseStream(), Encoding.Default).ReadToEnd();
+                if (text.Contains("secilenHesapNumarasi"))
+                    return true;
+                else
+                    return false;
+            }
+        }
         private async void btnTelefon_Click(object sender, EventArgs e)
         {
+            if (!oturumKontrol())
+            {
+                MessageBox.Show("Oturumunuz kapatılmış yeniden oturum açınız");
+                this.Hide();
+                Form f = Application.OpenForms["AnaForm"];
+                AnaForm form = (AnaForm)f;
+                form.Show();
+                return;
+            }
             if (telStatus == TelTaskStatus.Running)
             {
                 MessageBox.Show("Zaten çalışan bir sorgulama işlemi var.", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -206,44 +255,19 @@ namespace crmPadok
             List<Faturalar> telList;
             
                 telList = await getTelFatura();
-            //List<Task<string[]>> taskList = deneme();
-            //foreach (var item in taskList)
-            //{
-            //    string[] sonuc = item.Result;
-
-            //}
-            //List<Faturalar> liste = new List<Faturalar>();
-            //progressBar1.Value = 0;
-            //string[] numaralar = txtTelefon.Text.Split('\n');
-            //float progress = (float)100 / (float)numaralar.Length;
-            //int i = 0;
-            //foreach (var numara in numaralar)
-            //{
-            //    i++;
-            //    try
-            //    {
-            //        // Task<string[]> sorguSonuc = Task.Factory.StartNew(() => objCrm.telefonFatura(numara));
-            //        //   string[] sonuc = await sorguSonuc;
-            //        string[] sonuc = objCrm.telefonFatura(numara);
-            //        if (sonuc.Length >= 10)
-            //        {
-            //            string isim = sonuc[10]; string faturaDonemi = sonuc[2]; string fiyat = sonuc[1];
-            //            txtSonuclar.Text += "İsim: " + isim + " Borç Dönemi: " + faturaDonemi + " Borç: " + fiyat + "\n";
-            //            liste.Add(new Faturalar(numara, isim, faturaDonemi, fiyat));
-            //        }
-            //        else
-            //            txtSonuclar.Text += "--------------\n";
-
-            //        progressBar1.Value = Convert.ToInt32(progress * i);
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        MessageBox.Show("Sorgulama sırasında bir hata oluştu " + ex.Message, "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //    }
-            //}
         }
         private async void btnSorgula_Click(object sender, EventArgs e)
         {
+
+            if (!oturumKontrol())
+            {
+                MessageBox.Show("Oturumunuz kapatılmış yeniden oturum açınız");
+                this.Hide();
+                Form f = Application.OpenForms["AnaForm"];
+                AnaForm form = (AnaForm)f;
+                form.Show();
+                return;
+            }
             if (adslStatus == AdslTaskStatus.Running)
             {
                 MessageBox.Show("Zaten çalışan bir sorgulama işlemi var.", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -265,7 +289,7 @@ namespace crmPadok
       
         private void Bilgiler_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Form f = Application.OpenForms["Form1"];
+            Form f = Application.OpenForms["AnaForm"];
             ((AnaForm)f).Show();
         }
 
@@ -300,6 +324,89 @@ namespace crmPadok
             {
                 MessageBox.Show("Devam eden bir sorgulama işlemi yok", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void btnExcel_Click(object sender, EventArgs e)
+        {
+            if (telStatus == TelTaskStatus.Running)
+            {
+                MessageBox.Show("Lütfen sorgulama işleminin bitmesini bekleyiniz.", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            else if(telStatus==TelTaskStatus.Waiting)
+            {
+                MessageBox.Show("Excel'de görüntüleme yapmak için sorgulama yapmalısınız.","Hata",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                return;
+            }
+            else if(telFaturaListe == null)
+                return;
+
+            List<Faturalar> SortedList = telFaturaListe.OrderBy(o => o.AboneNo).ToList();
+            DisplayInExcel(SortedList);
+
+        }
+        void DisplayInExcel(List<Faturalar> faturalar)
+        {
+            var excelApp = new Excel.Application();
+
+            excelApp.Visible = true;
+
+            excelApp.Workbooks.Add();
+
+            Excel._Worksheet workSheet = excelApp.ActiveSheet;
+
+            // Earlier versions of C# require explicit casting.
+            //Excel._Worksheet workSheet = (Excel.Worksheet)excelApp.ActiveSheet;
+
+            // Establish column headings in cells A1 and B1.
+            workSheet.Cells[1, "A"] = "Telefon Numarası";
+            workSheet.Cells[1, "B"] = "İsim";
+            workSheet.Cells[1, "C"] = "Fatura Dönemi";
+            workSheet.Cells[1, "D"] = "Fiyat";
+
+            var row = 1;
+            foreach (var fatura in faturalar)
+            {
+                row++;
+                workSheet.Cells[row, "A"] = fatura.AboneNo;
+                workSheet.Cells[row, "B"] = fatura.Isim;
+                workSheet.Cells[row, "C"] = fatura.FaturaDonemi;
+                workSheet.Cells[row, "D"] = fatura.Fiyat;
+            }
+
+            workSheet.Columns[1].AutoFit();
+            workSheet.Columns[2].AutoFit();
+            workSheet.Columns[3].AutoFit();
+            workSheet.Columns[4].AutoFit();
+
+            // Call to AutoFormat in Visual C# 2010. This statement replaces the 
+            // two calls to AutoFit.
+            workSheet.Range["A1", "D"+(faturalar.Count+1)].AutoFormat(
+                Excel.XlRangeAutoFormat.xlRangeAutoFormatClassic1);
+
+            // Put the spreadsheet contents on the clipboard. The Copy method has one
+            // optional parameter for specifying a destination. Because no argument  
+            // is sent, the destination is the Clipboard.
+            //workSheet.Range["A1:B3"].Copy();
+        }
+
+        private void btnAdslExcel_Click(object sender, EventArgs e)
+        {
+            if (adslStatus == AdslTaskStatus.Running)
+            {
+                MessageBox.Show("Lütfen sorgulama işleminin bitmesini bekleyiniz.", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            else if (adslStatus == AdslTaskStatus.Waiting)
+            {
+                MessageBox.Show("Excel'de görüntüleme yapmak için sorgulama yapmalısınız.", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            else if (adslFaturaListe == null)
+                return;
+
+            List<Faturalar> SortedList = adslFaturaListe.OrderBy(o => o.AboneNo).ToList();
+            DisplayInExcel(SortedList);
         }
     }
 }

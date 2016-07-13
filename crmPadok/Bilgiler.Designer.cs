@@ -34,6 +34,7 @@
             this.btnTelefon = new System.Windows.Forms.Button();
             this.tabAdslTelefon = new System.Windows.Forms.TabControl();
             this.tabTelefon = new System.Windows.Forms.TabPage();
+            this.btnExcel = new System.Windows.Forms.Button();
             this.btnIptal = new System.Windows.Forms.Button();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.txtSonuclar = new System.Windows.Forms.RichTextBox();
@@ -43,6 +44,7 @@
             this.prgAdsl = new System.Windows.Forms.ProgressBar();
             this.txtAdslSonuc = new System.Windows.Forms.RichTextBox();
             this.txtAdsl = new System.Windows.Forms.RichTextBox();
+            this.btnAdslExcel = new System.Windows.Forms.Button();
             this.tabAdslTelefon.SuspendLayout();
             this.tabTelefon.SuspendLayout();
             this.tabAdsl.SuspendLayout();
@@ -108,6 +110,7 @@
             // 
             // tabTelefon
             // 
+            this.tabTelefon.Controls.Add(this.btnExcel);
             this.tabTelefon.Controls.Add(this.btnIptal);
             this.tabTelefon.Controls.Add(this.progressBar1);
             this.tabTelefon.Controls.Add(this.btnTelefon);
@@ -122,11 +125,25 @@
             this.tabTelefon.Text = "Telefon Sorgula";
             this.tabTelefon.UseVisualStyleBackColor = true;
             // 
+            // btnExcel
+            // 
+            this.btnExcel.BackColor = System.Drawing.Color.MediumAquamarine;
+            this.btnExcel.FlatAppearance.BorderSize = 0;
+            this.btnExcel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnExcel.Font = new System.Drawing.Font("Georgia", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.btnExcel.Location = new System.Drawing.Point(996, 576);
+            this.btnExcel.Name = "btnExcel";
+            this.btnExcel.Size = new System.Drawing.Size(75, 33);
+            this.btnExcel.TabIndex = 27;
+            this.btnExcel.Text = "Excel";
+            this.btnExcel.UseVisualStyleBackColor = false;
+            this.btnExcel.Click += new System.EventHandler(this.btnExcel_Click);
+            // 
             // btnIptal
             // 
-            this.btnIptal.Location = new System.Drawing.Point(1077, 576);
+            this.btnIptal.Location = new System.Drawing.Point(1077, 574);
             this.btnIptal.Name = "btnIptal";
-            this.btnIptal.Size = new System.Drawing.Size(75, 33);
+            this.btnIptal.Size = new System.Drawing.Size(75, 35);
             this.btnIptal.TabIndex = 25;
             this.btnIptal.Text = "İptal";
             this.btnIptal.UseVisualStyleBackColor = true;
@@ -159,6 +176,7 @@
             // 
             // tabAdsl
             // 
+            this.tabAdsl.Controls.Add(this.btnAdslExcel);
             this.tabAdsl.Controls.Add(this.btnAdslIptal);
             this.tabAdsl.Controls.Add(this.prgAdsl);
             this.tabAdsl.Controls.Add(this.txtAdslSonuc);
@@ -208,6 +226,20 @@
             this.txtAdsl.TabIndex = 23;
             this.txtAdsl.Text = "";
             // 
+            // btnAdslExcel
+            // 
+            this.btnAdslExcel.BackColor = System.Drawing.Color.MediumAquamarine;
+            this.btnAdslExcel.FlatAppearance.BorderSize = 0;
+            this.btnAdslExcel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAdslExcel.Font = new System.Drawing.Font("Georgia", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.btnAdslExcel.Location = new System.Drawing.Point(1000, 580);
+            this.btnAdslExcel.Name = "btnAdslExcel";
+            this.btnAdslExcel.Size = new System.Drawing.Size(75, 33);
+            this.btnAdslExcel.TabIndex = 28;
+            this.btnAdslExcel.Text = "Excel";
+            this.btnAdslExcel.UseVisualStyleBackColor = false;
+            this.btnAdslExcel.Click += new System.EventHandler(this.btnAdslExcel_Click);
+            // 
             // Bilgiler
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -246,5 +278,7 @@
         private System.Windows.Forms.ProgressBar prgAdsl;
         private System.Windows.Forms.RichTextBox txtAdsl;
         private System.Windows.Forms.RichTextBox txtAdslSonuc;
+        private System.Windows.Forms.Button btnExcel;
+        private System.Windows.Forms.Button btnAdslExcel;
     }
 }

@@ -16,7 +16,9 @@ namespace crmPadok
         CookieContainer _container = new CookieContainer();
 
         Dictionary<string, string> list = new Dictionary<string, string>();
-
+        /// <summary>
+        /// Cookieler için barınma alanı sitede işlem devamlılığını sağlar.
+        /// </summary>
         public CookieContainer Container
         {
             get
@@ -29,20 +31,9 @@ namespace crmPadok
                 _container = value;
             }
         }
-
-        public Dictionary<string, string> List
-        {
-            get
-            {
-                return list;
-            }
-
-            set
-            {
-                list = value;
-            }
-        }
-
+        /// <summary>
+        /// Siteye ilk girişteki cookieyi döndürür.
+        /// </summary>
         private void getFirstCookie()
         {
             CookieCollection cookies = new CookieCollection();
@@ -52,12 +43,12 @@ namespace crmPadok
             //Get the response from the server and save the cookies from the first request..
             try
             {
-
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                cookies = response.Cookies;
-                response.Close();
-                _container.Add(cookies);
-               
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+                    cookies = response.Cookies;
+                    response.Close();
+                    _container.Add(cookies);
+                }
             }
             catch (Exception)
             {
@@ -118,11 +109,19 @@ namespace crmPadok
                 return false;
             }
         }
+        /// <summary>
+        /// En baştan login yapılması gerektiğinde daha önceden kalan cookielerin silinmesini sağlar.
+        /// </summary>
         public void deleteCookies()
         {
             CookieContainer container = new CookieContainer();
             _container = container;
         }
+        /// <summary>
+        /// Siteye istenen data ile post requesti göderir.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns>İstenen data ile dönen request</returns>
         private HttpWebRequest getRequest(byte[] data)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://ipc2.ptt.gov.tr/pttwebapproot/ipcservlet");
@@ -169,7 +168,17 @@ namespace crmPadok
         }
         public Dictionary<string,string> getHesapNo()
         {
-            Dictionary<string, string> list = new Dictionary<string, string>();
+            if (list.Count==0)
+            {
+               getList();
+               return list;
+            }
+            else
+                return list;
+        }
+        private void getList()
+        {
+           // Dictionary<string, string> list = new Dictionary<string, string>();
             list.Add("cmd", WebUtility.UrlEncode("kurumtahsilatkurumsecildi"));
             list.Add("h_PageValidation", WebUtility.UrlEncode("ON"));
             try
@@ -286,12 +295,12 @@ namespace crmPadok
                 list.Add("kurumGirisTipi", WebUtility.UrlEncode("1"));
                 list.Add("kurumOnlineDurum", WebUtility.UrlEncode("0"));
                 list.Add("kurumParaCinsiKod", WebUtility.UrlEncode("TL"));
-                File.WriteAllText("C:\\users\\galatasaray\\desktop\\cookiefile.txt", _container.GetCookieHeader(new Uri("https://ipc2.ptt.gov.tr/pttwebapproot/ipcservlet")).ToString());
-                return list;
+               
+                
             }
             catch (Exception)
             {
-                return null;
+               
             }
         }
 

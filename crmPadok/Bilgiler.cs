@@ -87,9 +87,7 @@ namespace crmPadok
         }
         private async Task<List<Faturalar>> getTelFatura()
         {
-
             object state = new object();
-
             telFaturaListe = new List<Faturalar>();
             List<Task> taskList = new List<Task>();
             sourceTel = new CancellationTokenSource();
@@ -97,12 +95,12 @@ namespace crmPadok
             tokenTel = sourceTel.Token;
             string[] numaralar = txtTelefon.Text.Split('\n');
 
-            if(txtTelefon.Text.Length>9)
-              telStatus = TelTaskStatus.Running;
+            if (txtTelefon.Text.Length > 9)
+                telStatus = TelTaskStatus.Running;
 
             float progress = (float)100 / (float)numaralar.Length;
             Dictionary<string, string> keyList = objCrm.getHesapNo();
-            if(keyList.Count<15)
+            if (keyList.Count < 15)
             {
                 MessageBox.Show("Oturumunuz kapatılmıştır lütfen oturum açınız");
                 return null;
@@ -116,46 +114,36 @@ namespace crmPadok
                 //objSorgula.Container = objCrm.Container;
                 objSorgula.Container = objCrm.Container;
                 objSorgula.List = keyList;
-                var sonTask = Task.Run(() => objSorgula.telefonFatura(numara,tokenTel), tokenTel).ContinueWith(async (t) =>
-                  {
-                      string telNo = numara;
-                      await t;
-                      i++;
-                      progressBar1.Value =Convert.ToInt32(Math.Ceiling(Convert.ToDouble(progress * i)));
-                      if (t.IsFaulted)
-                          txtSonuclar.Text += telNo + "=>faulted " + t.Exception.Message;
-                      else
-                      {
+                var sonTask = Task.Run(() => objSorgula.telefonFatura(numara, tokenTel), tokenTel).ContinueWith(async (t) => {
+                        string telNo = numara;
+                        await t;
+                        i++;
+                        progressBar1.Value = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(progress * i)));
+
                         lock (state)
                         {
-
                             Faturalar telFatura = t.Result;
-                              if (telFatura != null)
-                              {
-                                  Task.Factory.StartNew(() => printToScreen(telFatura.ToString() + "\n"), tokenTel, TaskCreationOptions.AttachedToParent, TaskScheduler.FromCurrentSynchronizationContext());
-                                  telFaturaListe.Add(telFatura);
-                               
-                                  dtTel.Rows.Add(new[] { telFatura.AboneNo, telFatura.Isim, telFatura.FaturaDonemi, telFatura.Fiyat });
-                              }
-                              else if (t.IsCanceled)
-                                  Task.Factory.StartNew(() => printToScreen("Cancelled"));
-                              else
-                              {
-                                  Task.Factory.StartNew(() => printToScreen(telNo + "=> --------------\n"), tokenTel, TaskCreationOptions.AttachedToParent, TaskScheduler.FromCurrentSynchronizationContext());
-                                  Faturalar bosTelFatura = new Faturalar(telNo, "---", "---", "---");
-                                  telFaturaListe.Add(bosTelFatura);
-                             
-                                  dtTel.Rows.Add(new[] { bosTelFatura.AboneNo, bosTelFatura.Isim, bosTelFatura.FaturaDonemi, bosTelFatura.Fiyat });
-                              }
-                          }
-                      }
-                  },
-                 TaskScheduler.FromCurrentSynchronizationContext());
-
+                            if (telFatura != null)
+                            {
+                                telFaturaListe.Add(telFatura);
+                                dtTel.Rows.Add(new[] { telFatura.AboneNo, telFatura.Isim, telFatura.FaturaDonemi, telFatura.Fiyat });
+                            }
+                            else
+                            {
+                                Faturalar bosTelFatura = new Faturalar(telNo, "---", "---", "---");
+                                telFaturaListe.Add(bosTelFatura);
+                                dtTel.Rows.Add(new[] { bosTelFatura.AboneNo, bosTelFatura.Isim, bosTelFatura.FaturaDonemi, bosTelFatura.Fiyat });
+                            }
+                        }
+             
+            },TaskScheduler.FromCurrentSynchronizationContext()
+                   );
                 taskList.Add(sonTask);
 
                 if (taskList.Count % 100 == 0)
+                {
                     await Task.WhenAll(taskList);
+                }
             }
             await Task.WhenAll(taskList);
             if (progressBar1.Value == 100)
@@ -202,36 +190,26 @@ namespace crmPadok
                     string adslNo = numara;
 
                     await t;
-                    
-                    if (t.IsFaulted)
-                        txtAdslSonuc.Text += adslNo + "=>faulted " + t.Exception.Message;
-                    else
-                    {
                         lock (state)
+                    {
+                        i++;
+                        prgAdsl.Value = Convert.ToInt32(progress * i);
+                        Faturalar adslFatura = t.Result;
+                        if (adslFatura != null)
                         {
-                            i++;
-                            prgAdsl.Value = Convert.ToInt32(progress * i);
-                            Faturalar adslFatura = t.Result;
-                            if (adslFatura != null)
-                            {
-                                Task.Factory.StartNew(() => printToScreenAdsl(adslFatura.ToString() + "\n"), tokenAdsl, TaskCreationOptions.AttachedToParent, TaskScheduler.FromCurrentSynchronizationContext());
-                                adslFaturaListe.Add(adslFatura);
-
-                                dtAdsl.Rows.Add(new[] { adslFatura.AboneNo, adslFatura.Isim, adslFatura.FaturaDonemi, adslFatura.Fiyat });
-                            }
-                            else if (t.IsCanceled)
-                                Task.Factory.StartNew(() => printToScreenAdsl("Cancelled"));
-                            else
-                            {
-                                Faturalar bosAdslFatura = new Faturalar(adslNo, "---", "---", "---");
-                                //textbox'a ekler
-                                Task.Factory.StartNew(() => printToScreenAdsl(bosAdslFatura.ToString()), tokenAdsl, TaskCreationOptions.AttachedToParent, TaskScheduler.FromCurrentSynchronizationContext());
-                                //listeye ekler
-                                telFaturaListe.Add(bosAdslFatura);
-                                //data table a ekler
-                                dtAdsl.Rows.Add(new[] { bosAdslFatura.AboneNo, bosAdslFatura.Isim, bosAdslFatura.FaturaDonemi, bosAdslFatura.Fiyat });
-
-                            }
+                            // Task.Factory.StartNew(() => printToScreenAdsl(adslFatura.ToString() + "\n"), tokenAdsl, TaskCreationOptions.AttachedToParent, TaskScheduler.FromCurrentSynchronizationContext());
+                            adslFaturaListe.Add(adslFatura);
+                            dtAdsl.Rows.Add(new[] { adslFatura.AboneNo, adslFatura.Isim, adslFatura.FaturaDonemi, adslFatura.Fiyat });
+                        }
+                        else
+                        {
+                            Faturalar bosAdslFatura = new Faturalar(adslNo, "---", "---", "---");
+                            //textbox'a ekler
+                            //  Task.Factory.StartNew(() => printToScreenAdsl(bosAdslFatura.ToString()), tokenAdsl, TaskCreationOptions.AttachedToParent, TaskScheduler.FromCurrentSynchronizationContext());
+                            //listeye ekler
+                            adslFaturaListe.Add(bosAdslFatura);
+                            //data table a ekler
+                            dtAdsl.Rows.Add(new[] { bosAdslFatura.AboneNo, bosAdslFatura.Isim, bosAdslFatura.FaturaDonemi, bosAdslFatura.Fiyat });
                         }
                     }
                 },
@@ -262,14 +240,6 @@ namespace crmPadok
             }
             return adslFaturaListe;
         }
-        private void printToScreen(string text)
-        {
-            txtSonuclar.Text += text;
-        }
-        private void printToScreenAdsl(string text)
-        {
-            txtAdslSonuc.Text += text;
-        }
         //sorgulama yapmadan önce oturum sonlandırılmış mı onu kontrol eder
         private bool oturumKontrol()
         {
@@ -278,6 +248,7 @@ namespace crmPadok
             req.CookieContainer = objCrm.Container;
             req.UserAgent = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.121 Safari/535.2";
             string text = "";
+            
             using (HttpWebResponse resp = (HttpWebResponse)req.GetResponse())
             {
                 text = new StreamReader(resp.GetResponseStream(), Encoding.Default).ReadToEnd();
@@ -289,6 +260,11 @@ namespace crmPadok
         }
         private async void btnTelefon_Click(object sender, EventArgs e)
         {
+            if (!AnaForm.CheckForInternetConnection())
+            {
+                MessageBox.Show("İnternet bağlantınızı kontrol edin!", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
             if (!oturumKontrol())
             {
                 MessageBox.Show("Oturumunuz kapatılmış yeniden oturum açınız");
@@ -303,12 +279,19 @@ namespace crmPadok
                 MessageBox.Show("Zaten çalışan bir sorgulama işlemi var.", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            List<Faturalar> telList;
-            
+                List<Faturalar> telList;
+
                 telList = await getTelFatura();
+            
+        
         }
         private async void btnSorgula_Click(object sender, EventArgs e)
         {
+            if (!AnaForm.CheckForInternetConnection())
+            {
+                MessageBox.Show("İnternet bağlantınızı kontrol edin!", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
             if (!oturumKontrol())
             {
@@ -324,7 +307,7 @@ namespace crmPadok
                 MessageBox.Show("Zaten çalışan bir sorgulama işlemi var.", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            List<Faturalar> telList = await getAdslFatura();
+            List<Faturalar> adslList = await getAdslFatura();
         }
         private void Bilgiler_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -355,8 +338,6 @@ namespace crmPadok
                 if (result == DialogResult.Yes)
                 {
                     sourceAdsl.Cancel(true);
-                    MessageBox.Show("İptal edildi.", "Padok", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    prgAdsl.Value = 0;
                 }
             }
             else

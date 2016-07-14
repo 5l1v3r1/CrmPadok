@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AnaForm));
             this.btnLogin = new System.Windows.Forms.Button();
             this.txtMusteriNo = new System.Windows.Forms.TextBox();
             this.txtSifre = new System.Windows.Forms.TextBox();
@@ -40,7 +41,6 @@
             this.tmr = new System.Windows.Forms.Timer(this.components);
             this.lblTime = new System.Windows.Forms.Label();
             this.lblBekle = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnLogin
@@ -64,7 +64,6 @@
             this.txtMusteriNo.Name = "txtMusteriNo";
             this.txtMusteriNo.Size = new System.Drawing.Size(154, 20);
             this.txtMusteriNo.TabIndex = 1;
-            this.txtMusteriNo.Text = "01846250031";
             // 
             // txtSifre
             // 
@@ -72,7 +71,6 @@
             this.txtSifre.Name = "txtSifre";
             this.txtSifre.Size = new System.Drawing.Size(154, 20);
             this.txtSifre.TabIndex = 2;
-            this.txtSifre.Text = "35077811";
             this.txtSifre.UseSystemPasswordChar = true;
             // 
             // lblMusteri
@@ -151,24 +149,12 @@
             this.lblBekle.Size = new System.Drawing.Size(0, 13);
             this.lblBekle.TabIndex = 11;
             // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(209, 146);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 12;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Visible = false;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
             // AnaForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(340, 177);
-            this.Controls.Add(this.button1);
             this.Controls.Add(this.lblBekle);
             this.Controls.Add(this.lblTime);
             this.Controls.Add(this.lblSms);
@@ -179,9 +165,10 @@
             this.Controls.Add(this.txtSifre);
             this.Controls.Add(this.txtMusteriNo);
             this.Controls.Add(this.btnLogin);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "AnaForm";
-            this.ShowIcon = false;
             this.Text = "Padok";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
@@ -202,7 +189,6 @@
         private System.Windows.Forms.Timer tmr;
         private System.Windows.Forms.Label lblTime;
         private System.Windows.Forms.Label lblBekle;
-        private System.Windows.Forms.Button button1;
     }
 }
 

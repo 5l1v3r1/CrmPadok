@@ -34,18 +34,75 @@ namespace crmPadok
             req.CookieContainer = objCrm.Container;
             req.UserAgent = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.121 Safari/535.2";
             string text = "";
-            using (HttpWebResponse resp = (HttpWebResponse)req.GetResponse())
+            try
             {
-                text = new StreamReader(resp.GetResponseStream(), Encoding.Default).ReadToEnd();
-                if (text.Contains("secilenHesapNumarasi"))
-                    return true;
-                else
-                    return false;
+                using (HttpWebResponse resp = (HttpWebResponse)req.GetResponse())
+                {
+                    text = new StreamReader(resp.GetResponseStream(), Encoding.Default).ReadToEnd();
+                    if (text.Contains("secilenHesapNumarasi"))
+                        return true;
+                    else
+                        return false;
+                }
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return false;
             }
         }
-     
+        /// <summary>
+        /// İnternet bağlantısı var mı yok mu kontrol eder.
+        /// </summary>
+        /// <returns></returns>
+        public static bool CheckForInternetConnection()
+        {
+            try
+            {
+                using (var client = new WebClient())
+                {
+                    using (var stream = client.OpenRead("http://www.google.com"))
+                    {
+                        return true;
+                    }
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Bağlantı yoksa hata verir.
+        /// </summary>
+        /// <returns></returns>
+        public bool internetHatasi()
+        {
+            DialogResult result = MessageBox.Show("Lütfen internet bağlantınızı kontrol ediniz", "Hata", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
+            if (DialogResult.Retry == result)
+            {
+                if (!CheckForInternetConnection())
+                {
+                    internetHatasi();
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            else
+                return false;
+        }
         private async void btnLogin_Click(object sender, EventArgs e)
         {
+            if(!CheckForInternetConnection())
+            {
+               //internet bağlantısı olmadığıda fonksiyondan çıkar ancak yeniden dene sonrası geri geldiğinde devam eder.
+                if (!internetHatasi())
+                    return;
+            }
             //önceki cookie ile giriş yapılabiliniyor mu kontrol eder giriş başarılı ise yeniden sms şifresi göndermez.
             if (oturumKontrol())
             {
@@ -55,13 +112,6 @@ namespace crmPadok
                 this.Hide();
                 return;
             }
-            else
-            {
-                DialogResult result = MessageBox.Show("Bu cookie ile giriş sağlanamadı yeni sms gönderilecek devam etmek ister misiniz?","Uyarı",MessageBoxButtons.YesNo,MessageBoxIcon.Information);
-                if (result == DialogResult.No)
-                    return;
-            }
-
             Task<bool> taskSonuc;
              
             if (txtMusteriNo.Text.Length != 11 || txtSifre.Text.Length != 8)
@@ -99,6 +149,12 @@ namespace crmPadok
         }
         private async void btnSms_Click(object sender, EventArgs e)
         {
+            if (!CheckForInternetConnection())
+            {
+                //internet bağlantısı olmadığıda fonksiyondan çıkar ancak yeniden dene sonrası geri geldiğinde devam eder.
+                if (!internetHatasi())
+                    return;
+            }
             int smsSifreKontrol = 0;
             if(!int.TryParse(txtSms.Text,out smsSifreKontrol))
             {
@@ -120,7 +176,8 @@ namespace crmPadok
                 {
                     //cookieler gelmeden önce bu çalıştırılmak zorunda yok girmiyor
                     objCrm.cookieKaydet();
-
+                    lblBekle.Text = "";
+                    txtSifre.Text = "";
                     tmr.Stop();
                     #region gizle göster
                     txtSms.Text = "";
@@ -192,13 +249,10 @@ namespace crmPadok
         }
         private void Form1_Load(object sender, EventArgs e)
         {
+            
             txtMusteriNo.Focus();
-        }
-        private void button1_Click(object sender, EventArgs e)
-        {
-            //Bilgiler bilg = new Bilgiler(objCrm);
-            //bilg.Show();
-            objCrm.cookieKaydet();
+            if (oturumKontrol())
+                lblBekle.Text = "Cookie ile giriş yapılabilir";
         }
     }
 }

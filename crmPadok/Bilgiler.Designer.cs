@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Bilgiler));
             this.btnAdslSorgula = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -42,13 +43,13 @@
             this.txtSonuclar = new System.Windows.Forms.RichTextBox();
             this.txtTelefon = new System.Windows.Forms.RichTextBox();
             this.tabAdsl = new System.Windows.Forms.TabPage();
+            this.btnAdslDataTemizle = new System.Windows.Forms.Button();
             this.dataGridAdsl = new System.Windows.Forms.DataGridView();
             this.btnAdslExcel = new System.Windows.Forms.Button();
             this.btnAdslIptal = new System.Windows.Forms.Button();
             this.prgAdsl = new System.Windows.Forms.ProgressBar();
             this.txtAdslSonuc = new System.Windows.Forms.RichTextBox();
             this.txtAdsl = new System.Windows.Forms.RichTextBox();
-            this.btnAdslDataTemizle = new System.Windows.Forms.Button();
             this.tabAdslTelefon.SuspendLayout();
             this.tabTelefon.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridTel)).BeginInit();
@@ -174,12 +175,15 @@
             // 
             // btnIptal
             // 
+            this.btnIptal.BackColor = System.Drawing.Color.MediumAquamarine;
+            this.btnIptal.FlatAppearance.BorderSize = 0;
+            this.btnIptal.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnIptal.Location = new System.Drawing.Point(1077, 574);
             this.btnIptal.Name = "btnIptal";
             this.btnIptal.Size = new System.Drawing.Size(75, 35);
             this.btnIptal.TabIndex = 25;
             this.btnIptal.Text = "İptal";
-            this.btnIptal.UseVisualStyleBackColor = true;
+            this.btnIptal.UseVisualStyleBackColor = false;
             this.btnIptal.Click += new System.EventHandler(this.btnIptal_Click);
             // 
             // progressBar1
@@ -225,6 +229,20 @@
             this.tabAdsl.TabIndex = 1;
             this.tabAdsl.Text = "Adsl Sorgula";
             this.tabAdsl.UseVisualStyleBackColor = true;
+            // 
+            // btnAdslDataTemizle
+            // 
+            this.btnAdslDataTemizle.BackColor = System.Drawing.Color.MediumAquamarine;
+            this.btnAdslDataTemizle.FlatAppearance.BorderSize = 0;
+            this.btnAdslDataTemizle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAdslDataTemizle.Font = new System.Drawing.Font("Georgia", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.btnAdslDataTemizle.Location = new System.Drawing.Point(919, 576);
+            this.btnAdslDataTemizle.Name = "btnAdslDataTemizle";
+            this.btnAdslDataTemizle.Size = new System.Drawing.Size(75, 33);
+            this.btnAdslDataTemizle.TabIndex = 32;
+            this.btnAdslDataTemizle.Text = "Temizle";
+            this.btnAdslDataTemizle.UseVisualStyleBackColor = false;
+            this.btnAdslDataTemizle.Click += new System.EventHandler(this.btnAdslDataTemizle_Click);
             // 
             // dataGridAdsl
             // 
@@ -286,20 +304,6 @@
             this.txtAdsl.TabIndex = 23;
             this.txtAdsl.Text = "";
             // 
-            // btnAdslDataTemizle
-            // 
-            this.btnAdslDataTemizle.BackColor = System.Drawing.Color.MediumAquamarine;
-            this.btnAdslDataTemizle.FlatAppearance.BorderSize = 0;
-            this.btnAdslDataTemizle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnAdslDataTemizle.Font = new System.Drawing.Font("Georgia", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.btnAdslDataTemizle.Location = new System.Drawing.Point(919, 576);
-            this.btnAdslDataTemizle.Name = "btnAdslDataTemizle";
-            this.btnAdslDataTemizle.Size = new System.Drawing.Size(75, 33);
-            this.btnAdslDataTemizle.TabIndex = 32;
-            this.btnAdslDataTemizle.Text = "Temizle";
-            this.btnAdslDataTemizle.UseVisualStyleBackColor = false;
-            this.btnAdslDataTemizle.Click += new System.EventHandler(this.btnAdslDataTemizle_Click);
-            // 
             // Bilgiler
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -308,9 +312,10 @@
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1201, 670);
             this.Controls.Add(this.tabAdslTelefon);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "Bilgiler";
-            this.ShowIcon = false;
             this.Text = "Padok";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Bilgiler_FormClosing);
             this.tabAdslTelefon.ResumeLayout(false);

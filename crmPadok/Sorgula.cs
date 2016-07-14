@@ -106,7 +106,6 @@ namespace crmPadok
             }
             catch (Exception)
             {
-
                 return null;
             }
         }
@@ -161,7 +160,6 @@ namespace crmPadok
             }
             catch (Exception)
             {
-
                 return null;
             }
 
@@ -185,9 +183,14 @@ namespace crmPadok
                 }
             }
             string[] sonuc = sonucText.Split('@');
-            string isim = sonuc[10]; string faturaDonemi = sonuc[2]; string fiyat = sonuc[1];
-            Faturalar fatura = new Faturalar(numara, isim, faturaDonemi, fiyat);
-            return fatura;
+            if (sonuc.Length >= 10)
+            {
+                string isim = sonuc[10]; string faturaDonemi = sonuc[2]; string fiyat = sonuc[1];
+                Faturalar fatura = new Faturalar(numara, isim, faturaDonemi, fiyat);
+                return fatura;
+            }
+            else
+                return null;
         }
     }
 }

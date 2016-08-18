@@ -41,6 +41,7 @@
             this.tmr = new System.Windows.Forms.Timer(this.components);
             this.lblTime = new System.Windows.Forms.Label();
             this.lblBekle = new System.Windows.Forms.Label();
+            this.chkBeniHatirla = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // btnLogin
@@ -149,12 +150,26 @@
             this.lblBekle.Size = new System.Drawing.Size(0, 13);
             this.lblBekle.TabIndex = 11;
             // 
+            // chkBeniHatirla
+            // 
+            this.chkBeniHatirla.AutoSize = true;
+            this.chkBeniHatirla.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkBeniHatirla.Location = new System.Drawing.Point(204, 148);
+            this.chkBeniHatirla.Name = "chkBeniHatirla";
+            this.chkBeniHatirla.Size = new System.Drawing.Size(80, 17);
+            this.chkBeniHatirla.TabIndex = 12;
+            this.chkBeniHatirla.Text = "Beni Hatırla";
+            this.chkBeniHatirla.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkBeniHatirla.UseVisualStyleBackColor = true;
+            this.chkBeniHatirla.CheckedChanged += new System.EventHandler(this.chkBeniHatirla_CheckedChanged);
+            // 
             // AnaForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(340, 177);
+            this.Controls.Add(this.chkBeniHatirla);
             this.Controls.Add(this.lblBekle);
             this.Controls.Add(this.lblTime);
             this.Controls.Add(this.lblSms);
@@ -189,6 +204,7 @@
         private System.Windows.Forms.Timer tmr;
         private System.Windows.Forms.Label lblTime;
         private System.Windows.Forms.Label lblBekle;
+        private System.Windows.Forms.CheckBox chkBeniHatirla;
     }
 }
 

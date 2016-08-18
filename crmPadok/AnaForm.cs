@@ -61,11 +61,16 @@ namespace crmPadok
             {
                 using (var client = new WebClient())
                 {
-                    using (var stream = client.OpenRead("http://www.google.com"))
+                    using (var stream = client.OpenRead("http://www.google.com.tr"))
                     {
                         return true;
                     }
                 }
+            }
+            catch(WebException ex)
+            {
+                MessageBox.Show("Hata "+ex.Message);
+                return false;
             }
             catch
             {
@@ -125,6 +130,7 @@ namespace crmPadok
             bool sonuc = await taskSonuc;
             if (sonuc)
             {
+                beniHatirla();
                 #region gizle göster
                 lblBekle.Visible = false;
                 lblSifre.Visible = false;
@@ -251,8 +257,49 @@ namespace crmPadok
         {
             
             txtMusteriNo.Focus();
-            if (oturumKontrol())
-                lblBekle.Text = "Cookie ile giriş yapılabilir";
+            if (File.Exists(Path.GetTempPath() + "\\userLogin.txt"))
+            {
+               
+                string path = Path.GetTempPath() + "\\userLogin.txt";
+
+                string[] cookieFile = File.ReadAllText(path).Split(' ');
+                txtMusteriNo.Text = cookieFile[0];
+                txtSifre.Text = cookieFile[1];
+                chkBeniHatirla.CheckState = CheckState.Checked;
+            }
+               
+
+                if (CheckForInternetConnection())
+            {
+                if (oturumKontrol())
+                    lblBekle.Text = "Cookie ile giriş yapılabilir";
+            }
+
+        }
+        private void beniHatirla()
+        {
+            if (chkBeniHatirla.Checked == true)
+            {
+                if (File.Exists(Path.GetTempPath() + "\\userLogin.txt"))
+                    File.Delete(Path.GetTempPath() + "\\userLogin.txt");
+
+                //tekrar oluşturuyoruz
+                string myTempFile = Path.Combine(Path.GetTempPath(), "userLogin.txt");
+                using (StreamWriter sw = new StreamWriter(myTempFile))
+                {
+                    sw.Write(txtMusteriNo.Text + " " + txtSifre.Text);
+                }
+            }
+            else if (chkBeniHatirla.Checked == false)
+            {
+                if (File.Exists(Path.GetTempPath() + "\\userLogin.txt"))
+                    File.Delete(Path.GetTempPath() + "\\userLogin.txt");
+
+            }
+        }
+        private void chkBeniHatirla_CheckedChanged(object sender, EventArgs e)
+        {
+            beniHatirla();
         }
     }
 }

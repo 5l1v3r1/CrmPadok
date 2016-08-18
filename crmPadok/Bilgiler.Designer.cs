@@ -63,7 +63,7 @@
             this.btnAdslSorgula.FlatAppearance.BorderSize = 0;
             this.btnAdslSorgula.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnAdslSorgula.Font = new System.Drawing.Font("Georgia", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.btnAdslSorgula.Location = new System.Drawing.Point(322, 575);
+            this.btnAdslSorgula.Location = new System.Drawing.Point(321, 580);
             this.btnAdslSorgula.Name = "btnAdslSorgula";
             this.btnAdslSorgula.Size = new System.Drawing.Size(75, 35);
             this.btnAdslSorgula.TabIndex = 17;
@@ -75,7 +75,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Georgia", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.label1.Location = new System.Drawing.Point(22, 24);
+            this.label1.Location = new System.Drawing.Point(21, 29);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(55, 15);
             this.label1.TabIndex = 18;
@@ -85,7 +85,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Georgia", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.label2.Location = new System.Drawing.Point(8, 22);
+            this.label2.Location = new System.Drawing.Point(14, 28);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(75, 15);
             this.label2.TabIndex = 21;
@@ -97,7 +97,7 @@
             this.btnTelefon.FlatAppearance.BorderSize = 0;
             this.btnTelefon.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnTelefon.Font = new System.Drawing.Font("Georgia", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.btnTelefon.Location = new System.Drawing.Point(316, 574);
+            this.btnTelefon.Location = new System.Drawing.Point(322, 580);
             this.btnTelefon.Name = "btnTelefon";
             this.btnTelefon.Size = new System.Drawing.Size(75, 35);
             this.btnTelefon.TabIndex = 20;
@@ -139,7 +139,7 @@
             this.dataGridTel.AllowUserToAddRows = false;
             this.dataGridTel.AllowUserToDeleteRows = false;
             this.dataGridTel.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridTel.Location = new System.Drawing.Point(496, 20);
+            this.dataGridTel.Location = new System.Drawing.Point(502, 26);
             this.dataGridTel.Name = "dataGridTel";
             this.dataGridTel.ReadOnly = true;
             this.dataGridTel.Size = new System.Drawing.Size(656, 525);
@@ -151,7 +151,7 @@
             this.btnTemizle.FlatAppearance.BorderSize = 0;
             this.btnTemizle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnTemizle.Font = new System.Drawing.Font("Georgia", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.btnTemizle.Location = new System.Drawing.Point(915, 576);
+            this.btnTemizle.Location = new System.Drawing.Point(921, 582);
             this.btnTemizle.Name = "btnTemizle";
             this.btnTemizle.Size = new System.Drawing.Size(75, 33);
             this.btnTemizle.TabIndex = 29;
@@ -165,7 +165,7 @@
             this.btnExcel.FlatAppearance.BorderSize = 0;
             this.btnExcel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnExcel.Font = new System.Drawing.Font("Georgia", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.btnExcel.Location = new System.Drawing.Point(996, 576);
+            this.btnExcel.Location = new System.Drawing.Point(1002, 582);
             this.btnExcel.Name = "btnExcel";
             this.btnExcel.Size = new System.Drawing.Size(75, 33);
             this.btnExcel.TabIndex = 27;
@@ -178,7 +178,7 @@
             this.btnIptal.BackColor = System.Drawing.Color.MediumAquamarine;
             this.btnIptal.FlatAppearance.BorderSize = 0;
             this.btnIptal.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnIptal.Location = new System.Drawing.Point(1077, 574);
+            this.btnIptal.Location = new System.Drawing.Point(1083, 580);
             this.btnIptal.Name = "btnIptal";
             this.btnIptal.Size = new System.Drawing.Size(75, 35);
             this.btnIptal.TabIndex = 25;
@@ -188,14 +188,14 @@
             // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(496, 547);
+            this.progressBar1.Location = new System.Drawing.Point(502, 553);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(656, 23);
             this.progressBar1.TabIndex = 24;
             // 
             // txtSonuclar
             // 
-            this.txtSonuclar.Location = new System.Drawing.Point(496, 20);
+            this.txtSonuclar.Location = new System.Drawing.Point(502, 26);
             this.txtSonuclar.Name = "txtSonuclar";
             this.txtSonuclar.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
             this.txtSonuclar.Size = new System.Drawing.Size(656, 525);
@@ -204,7 +204,7 @@
             // 
             // txtTelefon
             // 
-            this.txtTelefon.Location = new System.Drawing.Point(123, 20);
+            this.txtTelefon.Location = new System.Drawing.Point(129, 26);
             this.txtTelefon.Name = "txtTelefon";
             this.txtTelefon.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
             this.txtTelefon.Size = new System.Drawing.Size(268, 525);
@@ -236,7 +236,7 @@
             this.btnAdslDataTemizle.FlatAppearance.BorderSize = 0;
             this.btnAdslDataTemizle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnAdslDataTemizle.Font = new System.Drawing.Font("Georgia", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.btnAdslDataTemizle.Location = new System.Drawing.Point(919, 576);
+            this.btnAdslDataTemizle.Location = new System.Drawing.Point(918, 581);
             this.btnAdslDataTemizle.Name = "btnAdslDataTemizle";
             this.btnAdslDataTemizle.Size = new System.Drawing.Size(75, 33);
             this.btnAdslDataTemizle.TabIndex = 32;
@@ -249,7 +249,7 @@
             this.dataGridAdsl.AllowUserToAddRows = false;
             this.dataGridAdsl.AllowUserToDeleteRows = false;
             this.dataGridAdsl.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridAdsl.Location = new System.Drawing.Point(500, 20);
+            this.dataGridAdsl.Location = new System.Drawing.Point(499, 25);
             this.dataGridAdsl.Name = "dataGridAdsl";
             this.dataGridAdsl.ReadOnly = true;
             this.dataGridAdsl.Size = new System.Drawing.Size(656, 525);
@@ -261,7 +261,7 @@
             this.btnAdslExcel.FlatAppearance.BorderSize = 0;
             this.btnAdslExcel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnAdslExcel.Font = new System.Drawing.Font("Georgia", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.btnAdslExcel.Location = new System.Drawing.Point(1000, 577);
+            this.btnAdslExcel.Location = new System.Drawing.Point(999, 582);
             this.btnAdslExcel.Name = "btnAdslExcel";
             this.btnAdslExcel.Size = new System.Drawing.Size(75, 33);
             this.btnAdslExcel.TabIndex = 28;
@@ -271,7 +271,7 @@
             // 
             // btnAdslIptal
             // 
-            this.btnAdslIptal.Location = new System.Drawing.Point(1081, 577);
+            this.btnAdslIptal.Location = new System.Drawing.Point(1080, 582);
             this.btnAdslIptal.Name = "btnAdslIptal";
             this.btnAdslIptal.Size = new System.Drawing.Size(75, 33);
             this.btnAdslIptal.TabIndex = 27;
@@ -281,14 +281,14 @@
             // 
             // prgAdsl
             // 
-            this.prgAdsl.Location = new System.Drawing.Point(500, 548);
+            this.prgAdsl.Location = new System.Drawing.Point(499, 553);
             this.prgAdsl.Name = "prgAdsl";
             this.prgAdsl.Size = new System.Drawing.Size(656, 23);
             this.prgAdsl.TabIndex = 26;
             // 
             // txtAdslSonuc
             // 
-            this.txtAdslSonuc.Location = new System.Drawing.Point(500, 20);
+            this.txtAdslSonuc.Location = new System.Drawing.Point(499, 25);
             this.txtAdslSonuc.Name = "txtAdslSonuc";
             this.txtAdslSonuc.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
             this.txtAdslSonuc.Size = new System.Drawing.Size(656, 525);
@@ -297,7 +297,7 @@
             // 
             // txtAdsl
             // 
-            this.txtAdsl.Location = new System.Drawing.Point(129, 22);
+            this.txtAdsl.Location = new System.Drawing.Point(128, 27);
             this.txtAdsl.Name = "txtAdsl";
             this.txtAdsl.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
             this.txtAdsl.Size = new System.Drawing.Size(268, 525);

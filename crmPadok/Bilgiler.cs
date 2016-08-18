@@ -108,8 +108,8 @@ namespace crmPadok
             int i = 0;
             foreach (var numara in numaralar)
             {
-                if (numara == "")
-                    continue;
+                //if (numara == "")
+                //    continue;
                 Sorgula objSorgula = new Sorgula();
                 //objSorgula.Container = objCrm.Container;
                 objSorgula.Container = objCrm.Container;
@@ -131,7 +131,7 @@ namespace crmPadok
                             else
                             {
                                 Faturalar bosTelFatura = new Faturalar(telNo, "---", "---", "---");
-                                telFaturaListe.Add(bosTelFatura);
+                               // telFaturaListe.Add(bosTelFatura);
                                 dtTel.Rows.Add(new[] { bosTelFatura.AboneNo, bosTelFatura.Isim, bosTelFatura.FaturaDonemi, bosTelFatura.Fiyat });
                             }
                         }
@@ -140,7 +140,7 @@ namespace crmPadok
                    );
                 taskList.Add(sonTask);
 
-                if (taskList.Count % 100 == 0)
+                if (taskList.Count % 50 == 0)
                 {
                     await Task.WhenAll(taskList);
                 }
@@ -178,8 +178,8 @@ namespace crmPadok
             int i = 0;
             foreach (var numara in numaralar)
             {
-                if (numara == "")
-                    continue;
+                //if (numara == "")
+                //    continue;
                 //Her sorgulama için ayrı obje
                 Sorgula objSorgula = new Sorgula();
                 //daha önceki cookieler yeni objeye aktarılıyor
@@ -216,7 +216,7 @@ namespace crmPadok
                  TaskScheduler.FromCurrentSynchronizationContext());
 
                 taskList.Add(sonTask);
-                if (taskList.Count % 100 == 0)
+                if (taskList.Count % 50 == 0)
                     await Task.WhenAll(taskList);
             }
             //sorgulama bitti yada iptal edildi
